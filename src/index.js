@@ -1,12 +1,7 @@
 import { serve } from '@hono/node-server'
-import { Hono } from 'hono'
+import app from './app/app.js'
 
-const app = new Hono()
 const port = process.env.PORT || 3000
-
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
 
 serve({
   fetch: app.fetch,
