@@ -1,0 +1,19 @@
+{
+  "name": "auth-auth",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.js",
+    "setup": "sqlite3 ./auth.db < ./better-auth_migrations/*.sql"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.19.0",
+    "better-auth": "^1.3.7",
+    "better-sqlite3": "^12.2.0",
+    "hono": "^4.9.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.17",
+    "tsx": "^4.7.1",
+    "typescript": "^5.8.3"
+  }
+}
