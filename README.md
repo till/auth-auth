@@ -8,7 +8,7 @@ Ensure to have `sqlite3` installed, then:
 
 ```sh
 npm install
-npm setup
+npm run setup
 npm run dev
 ```
 
