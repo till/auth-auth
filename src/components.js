@@ -64,3 +64,14 @@ export const UserInfo = ({ user }) => html`
     <p><strong>Created:</strong> ${new Date(user.createdAt).toLocaleString()}</p>
   </div>
 `
+
+// Magic link button component
+export const MagicLinkButton = () => html`
+  <div style="text-align: center; margin: 20px 0;">
+    <span style="color: #666;">or</span>
+  </div>
+
+  <form method="get" action="/login/magic-link">
+    <button type="submit" style="background: #28a745; width: 100%;">Send Magic Link</button>
+  </form>
+`

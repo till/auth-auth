@@ -2,7 +2,7 @@
 
 Small authentication/profile prototype for Codebar.
 
-## Dev Setup
+## Local Setup
 
 Ensure to have `sqlite3` installed, then:
 
@@ -15,6 +15,12 @@ npm run dev
 ```sh
 open http://localhost:3000
 ```
+
+### Context
+
+- data is saved in a sqlite database
+- the app currently supports username/password and magic-link
+- for magic-link, **inspect the log to fetch the URL**
 
 ## Demo
 
