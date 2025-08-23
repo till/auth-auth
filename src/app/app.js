@@ -7,6 +7,11 @@ import { auth } from '../../auth.js'
 import authHandler from './routes/auth'
 import homeHandler from './routes/home'
 import profileHandler from './routes/profile'
+import whoamiHandler from './routes/whoami'
+
+
+// demo
+import demoHandler from './demo/routes'
 
 const app = new Hono()
 
@@ -41,6 +46,10 @@ app.use("*", async (c, next) => {
 app.route('/', authHandler)
 app.route('/', homeHandler)
 app.route('/', profileHandler)
+app.route('/', whoamiHandler)
+
+
+app.route('/demo', demoHandler)
 
 // serve assets, etc.
 app.use('/static/*', serveStatic({ root: './' }))

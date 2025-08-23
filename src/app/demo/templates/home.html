@@ -1,0 +1,43 @@
+<h1>Demo Time</h1>
+
+<p>This is a demo.</p>
+
+<p>This app:</p>
+
+<ul>
+  <li>doesn't know anything about better auth</li>
+  <li>makes requests to <b>/whoami</b> to determine status of the user</li>
+  <li>requests can be client-side (uses the browser cookies, like this demo)</li>
+  <li>requests can be server-side (e.g. from Rails, but need to pass on cookies)</li>
+</ul>
+
+
+<div class="status" id="status">
+</div>
+
+<script>
+  try {
+    fetch('/whoami', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+      },
+      credentials: 'include'
+    }).then((resp) => {
+      resp.json().then((user) => {
+        const status = document.getElementById('status')
+        status.innerHTML = `<pre>${JSON.stringify(user, null, 2)}</pre>`
+        if (user.role == 'guest') {
+          status.classList.remove('logged-in')
+          status.classList.add('logged-out')
+        } else {
+          status.classList.remove('logged-out')
+          status.classList.add('logged-in')
+        }
+      })
+    })
+
+  } catch(e) {
+    console.log(`error: ${e}`)
+  }
+</script>
