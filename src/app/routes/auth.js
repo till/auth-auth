@@ -1,7 +1,7 @@
 
 import { Hono } from 'hono'
 import { html } from 'hono/html'
-import { Layout, Navigation, Message, FormSection, MagicLinkButton } from './../../components.js'
+import { Layout, Navigation, Message, FormSection, MagicLinkButton, PasskeyButton } from './../../components.js'
 import { auth } from '../../../auth.js'
 
 // Helper function to forward Set-Cookie headers from better-auth response
@@ -41,6 +41,7 @@ export default new Hono()
             </form>
 
             ${MagicLinkButton()}
+            ${PasskeyButton({ action: 'signin' })}
           `
         })}
       `
@@ -227,4 +228,31 @@ export default new Hono()
     } catch (error) {
       return c.redirect('/login?error=' + encodeURIComponent('Magic link verification failed'));
     }
+  })
+  .get('/login/passkey', (c) => {
+    return c.html(Layout({
+      title: 'Passkey Sign In',
+      children: html`
+        <h1>Sign In with Passkey</h1>
+        ${Navigation({ 
+          back: { href: '/login', text: 'Back to Login' }
+        })}
+        
+        ${Message({ 
+          error: c.req.query('error'), 
+          success: c.req.query('success') 
+        })}
+
+        ${FormSection({ 
+          children: html`
+            <form onsubmit="handlePasskeySignIn(event)">
+              <div class="form-group">
+                <input type="email" id="passkey-email" placeholder="Enter your email" required />
+              </div>
+              <button type="submit" style="background: #6f42c1; color: white;">Sign In with Passkey</button>
+            </form>
+          `
+        })}
+      `
+    }))
   })

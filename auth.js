@@ -1,5 +1,6 @@
 import { betterAuth } from 'better-auth';
 import { magicLink } from 'better-auth/plugins';
+import { passkey } from 'better-auth/plugins/passkey';
 import Database from 'better-sqlite3';
 
 export const auth = betterAuth({
@@ -27,7 +28,8 @@ export const auth = betterAuth({
         // Return a resolved promise since we're just logging
         return Promise.resolve();
       }
-    })
+    }),
+    passkey(),
   ]
   // advanced: {
   //   crossSubDomainCookies: {
