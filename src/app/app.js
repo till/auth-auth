@@ -4,14 +4,14 @@ import { logger } from 'hono/logger'
 
 import { auth } from '../../auth.js'
 
-import authHandler from './routes/auth'
-import homeHandler from './routes/home'
-import profileHandler from './routes/profile'
-import whoamiHandler from './routes/whoami'
+import authHandler from './routes/auth.js'
+import homeHandler from './routes/home.js'
+import profileHandler from './routes/profile.js'
+import whoamiHandler from './routes/whoami.js'
 
 
 // demo
-import demoHandler from './demo/routes'
+import demoHandler from './demo/routes.js'
 
 const app = new Hono()
 
