@@ -30,7 +30,7 @@ open http://localhost:3000
 ### Context
 
 - data is saved in a sqlite database
-- the app currently supports username/password and magic-link
+- the app currently supports username/password, magic-link and (sign-in with) passkey
 - for magic-link, **inspect the log to fetch the URL**
 
 ## Demo
