@@ -1,5 +1,5 @@
 import { betterAuth } from 'better-auth';
-import { magicLink } from 'better-auth/plugins';
+import { admin, magicLink } from 'better-auth/plugins';
 import { passkey } from 'better-auth/plugins/passkey';
 import Database from 'better-sqlite3';
 
@@ -30,6 +30,9 @@ export const auth = betterAuth({
       }
     }),
     passkey(),
+    admin({
+      // adminUserIds: [],
+    }),
   ]
   // advanced: {
   //   crossSubDomainCookies: {

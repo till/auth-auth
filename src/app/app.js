@@ -8,6 +8,7 @@ import authHandler from './routes/auth.js'
 import homeHandler from './routes/home.js'
 import profileHandler from './routes/profile.js'
 import whoamiHandler from './routes/whoami.js'
+import adminHandler from './routes/admin.js'
 
 
 // demo
@@ -47,6 +48,7 @@ app.route('/', authHandler)
 app.route('/', homeHandler)
 app.route('/', profileHandler)
 app.route('/', whoamiHandler)
+app.route('/', adminHandler)
 
 
 app.route('/demo', demoHandler)
