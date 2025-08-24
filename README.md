@@ -33,6 +33,16 @@ open http://localhost:3000
 - the app currently supports username/password, magic-link and (sign-in with) passkey
 - for magic-link, **inspect the log to fetch the URL**
 
+## What's happening here?
+
+Once the application is running, you can try out the the following flows:
+
+- sign-up
+- sign-in (username/password, passkey)
+- add passkey
+
+In addition `/admin` hosts a very basic admin ui (list user, update roles).
+
 ## Demo
 
 There's an additional application (mounted in this setup), that would demonstrate how to determine if a user is logged in.

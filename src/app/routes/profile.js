@@ -1,6 +1,8 @@
 import { Hono } from 'hono'
 import { html } from 'hono/html'
-import { Layout, UserInfo, AddPasskeySection, PasskeyList, Message } from './../../components.js'
+import { Layout } from '../components/layout.js'
+import { Message } from '../components/common.js'
+import { UserInfo, AddPasskeySection, PasskeyList } from '../components/profile.js'
 import { auth } from '../../../auth.js'
 
 export default new Hono()

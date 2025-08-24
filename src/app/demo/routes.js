@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import { html, raw } from 'hono/html'
-import { Layout } from './../../components.js'
+import { Layout } from '../components/layout.js'
 import { readFile } from 'fs/promises'
 
 export default new Hono()
