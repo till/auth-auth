@@ -1,7 +1,9 @@
 
 import { Hono } from 'hono'
 import { html } from 'hono/html'
-import { Layout, Navigation, Message, FormSection, MagicLinkButton, PasskeyButton } from './../../components.js'
+import { Layout, Navigation } from '../components/layout.js'
+import { Message, FormSection } from '../components/common.js'
+import { Login, MagicLinkButton, PasskeyButton } from '../components/login.js'
 import { auth } from '../../../auth.js'
 
 // Helper function to forward Set-Cookie headers from better-auth response
@@ -30,16 +32,7 @@ export default new Hono()
 
         ${FormSection({ 
           children: html`
-            <form method="post" action="/signin">
-              <div class="form-group">
-                <input type="email" name="email" placeholder="Email" required />
-              </div>
-              <div class="form-group">
-                <input type="password" name="password" placeholder="Password" required />
-              </div>
-              <button type="submit">Sign In</button>
-            </form>
-
+            ${Login()}
             ${MagicLinkButton()}
             ${PasskeyButton({ action: 'signin' })}
           `

@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { html } from 'hono/html'
-import { Layout, LoginStatus } from './../../components.js'
-import { auth } from '../../../auth.js'
+import { Layout } from '../components/layout.js'
+import { LoginStatus } from '../components/home.js'
 
 export default new Hono()
   .get('/', async (c) => {
