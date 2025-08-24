@@ -3,7 +3,8 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "setup": "sqlite3 ./auth.db < ./better-auth_migrations/*.sql"
+    "db:generate": "npx @better-auth/cli generate --yes",
+    "db:migrate": "npx @better-auth/cli migrate --yes"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.0",
