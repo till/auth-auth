@@ -24,17 +24,38 @@ export const Layout = ({ title, children }) => html`
         const handlePasskeySignIn = async (event) => {
           event.preventDefault();
           const email = document.getElementById("passkey-email").value;
+          const form = event.target;
+          const redirectUrl = form.dataset.redirectUrl || "/profile";
 
           try {
-            await authClient.signIn.passkey({ email });
+            await authClient.signIn.passkey({
+              email,
+              callbackURL: redirectUrl,
+              errorCallbackURL: redirectUrl
+                ? "/login/passkey?redirect_url=" +
+                  encodeURIComponent(redirectUrl)
+                : "/login/passkey",
+            });
+            // better-auth should handle the redirect, but fallback just in case
             window.location.href =
-              "/profile?success=" +
+              redirectUrl +
+              "?success=" +
               encodeURIComponent("Signed in with passkey!");
           } catch (error) {
             console.error("Passkey sign in failed:", error);
-            window.location.href =
-              "/login/passkey?error=" +
-              encodeURIComponent("Passkey sign in failed: " + error.message);
+            const errorUrl =
+              redirectUrl && redirectUrl !== "/profile"
+                ? "/login/passkey?error=" +
+                  encodeURIComponent(
+                    "Passkey sign in failed: " + error.message,
+                  ) +
+                  "&redirect_url=" +
+                  encodeURIComponent(redirectUrl)
+                : "/login/passkey?error=" +
+                  encodeURIComponent(
+                    "Passkey sign in failed: " + error.message,
+                  );
+            window.location.href = errorUrl;
           }
         };
 
