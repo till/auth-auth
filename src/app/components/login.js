@@ -1,4 +1,4 @@
-import { html } from 'hono/html'
+import { html } from "hono/html";
 
 // Login form component
 export const Login = () => html`
@@ -11,7 +11,7 @@ export const Login = () => html`
     </div>
     <button type="submit">Sign In</button>
   </form>
-`
+`;
 
 // Magic link button component
 export const MagicLinkButton = () => html`
@@ -20,18 +20,23 @@ export const MagicLinkButton = () => html`
   </div>
 
   <form method="get" action="/login/magic-link">
-    <button type="submit" style="background: #28a745; width: 100%;">Send Magic Link</button>
-  </form>
-`
-
-// Passkey button component  
-export const PasskeyButton = ({ action = 'signin' }) => html`
-  <form method="get" action="${action === 'signup' ? '/signup/passkey' : '/login/passkey'}">
-    <button 
-      type="submit" 
-      style="background: #6f42c1; width: 100%; color: white;"
-    >
-      ${action === 'signup' ? 'Sign Up with Passkey' : 'Sign In with Passkey'}
+    <button type="submit" style="background: #28a745; width: 100%;">
+      Send Magic Link
     </button>
   </form>
-`
+`;
+
+// Passkey button component
+export const PasskeyButton = ({ action = "signin" }) => html`
+  <form
+    method="get"
+    action="${action === "signup" ? "/signup/passkey" : "/login/passkey"}"
+  >
+    <button
+      type="submit"
+      style="background: #6f42c1; width: 100%; color: white;"
+    >
+      ${action === "signup" ? "Sign Up with Passkey" : "Sign In with Passkey"}
+    </button>
+  </form>
+`;

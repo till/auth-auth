@@ -1,5 +1,5 @@
-import Database from 'better-sqlite3';
+import Database from "better-sqlite3";
 
-const db = new Database('./auth.db');
+const db = new Database("./auth.db");
 
 export { db };
