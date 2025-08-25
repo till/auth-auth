@@ -1,4 +1,5 @@
 import { html } from "hono/html";
+import appConfig from "../../../app.js";
 
 // Base layout component
 export const Layout = ({ title, children }) => html`
@@ -16,7 +17,7 @@ export const Layout = ({ title, children }) => html`
         import { passkeyClient } from "https://esm.sh/better-auth@latest/client/plugins";
 
         const authClient = createAuthClient({
-          baseURL: "http://localhost:3000",
+          baseURL: "http://${appConfig.host}:${appConfig.port}",
           plugins: [passkeyClient()],
         });
 

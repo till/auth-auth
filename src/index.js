@@ -1,14 +1,13 @@
 import { serve } from "@hono/node-server";
 import app from "./app/app.js";
-
-const port = process.env.PORT || 3000;
+import appConfig from "../app.js";
 
 serve(
   {
     fetch: app.fetch,
-    port: port,
+    port: appConfig.port,
   },
   (info) => {
-    console.log(`Server is running on http://localhost:${info.port}`);
+    console.log(`Server is running on http://${appConfig.host}:${info.port}`);
   },
 );
