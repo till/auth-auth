@@ -22,8 +22,10 @@ export const auth = betterAuth({
   },
   plugins: [
     magicLink({
+      // eslint-disable-next-line no-unused-vars -- request is currently unused in this demo
       sendMagicLink: async ({ email, token, url }, request) => {
         console.log(`Magic Link for ${email}: ${url}`);
+        console.log(`Token: ${token}`);
         console.log("---");
         // Return a resolved promise since we're just logging
         return Promise.resolve();

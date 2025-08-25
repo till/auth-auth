@@ -116,6 +116,7 @@ export default new Hono()
           encodeURIComponent("Account created! You can now sign in."),
       );
     } catch (error) {
+      console.error(`Error in /signup: ${error}`);
       return c.redirect("/login?error=" + encodeURIComponent("Network error"));
     }
   })
@@ -148,6 +149,7 @@ export default new Hono()
 
       return c.redirect("/profile?success=welcome+back");
     } catch (error) {
+      console.error(`Error in /signin: ${error}`);
       return c.redirect("/login?error=" + encodeURIComponent("Network error"));
     }
   })
@@ -267,6 +269,7 @@ export default new Hono()
         "/profile?success=" + encodeURIComponent("Successfully signed in!"),
       );
     } catch (error) {
+      console.error(`Error in /magic-link: ${error}`);
       return c.redirect(
         "/login?error=" + encodeURIComponent("Magic link verification failed"),
       );
