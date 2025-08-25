@@ -14,5 +14,6 @@ jobs:
       - run: npm ci
       - run: |
           npm run prettier:check
+          npm run lint
           npm run db:generate
           npm run db:migrate
