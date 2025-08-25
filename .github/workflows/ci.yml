@@ -10,8 +10,9 @@ jobs:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
-          node-version-file: '.nvmrc'
+          node-version-file: ".nvmrc"
       - run: npm ci
       - run: |
+          npm run prettier:check
           npm run db:generate
           npm run db:migrate

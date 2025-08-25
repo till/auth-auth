@@ -1,14 +1,14 @@
-import { betterAuth } from 'better-auth';
-import { admin, magicLink } from 'better-auth/plugins';
-import { passkey } from 'better-auth/plugins/passkey';
-import Database from 'better-sqlite3';
+import { betterAuth } from "better-auth";
+import { admin, magicLink } from "better-auth/plugins";
+import { passkey } from "better-auth/plugins/passkey";
+import Database from "better-sqlite3";
 
 export const auth = betterAuth({
-  database: new Database('./auth.db'),
-  baseURL: 'http://localhost:3000',
+  database: new Database("./auth.db"),
+  baseURL: "http://localhost:3000",
   logger: {
-		disabled: false,
-		level: 'debug',
+    disabled: false,
+    level: "debug",
   },
   emailAndPassword: {
     enabled: true,
@@ -24,16 +24,16 @@ export const auth = betterAuth({
     magicLink({
       sendMagicLink: async ({ email, token, url }, request) => {
         console.log(`Magic Link for ${email}: ${url}`);
-        console.log('---');
+        console.log("---");
         // Return a resolved promise since we're just logging
         return Promise.resolve();
-      }
+      },
     }),
     passkey(),
     admin({
       // adminUserIds: [],
     }),
-  ]
+  ],
   // advanced: {
   //   crossSubDomainCookies: {
   //     enabled: true,

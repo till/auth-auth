@@ -4,7 +4,10 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "db:generate": "npx @better-auth/cli generate --yes",
-    "db:migrate": "npx @better-auth/cli migrate --yes"
+    "db:migrate": "npx @better-auth/cli migrate --yes",
+    "prettier:check": "prettier --check '**/*.{js,css,md,yml}'",
+    "prettier:write": "prettier --write '**/*.{js,css,md,yml}'",
+    "prepare": "husky"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.0",
@@ -14,5 +17,13 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.5",
+    "prettier": "^3.6.2"
+  },
+  "lint-staged": {
+    "**/*.{js,css,md,yml}": "prettier --write"
   }
 }
