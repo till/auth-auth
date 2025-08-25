@@ -35,6 +35,7 @@ app.use("*", async (c, next) => {
     c.set("user", session?.user || null);
     c.set("session", session?.session || null);
   } catch (error) {
+    console.error(`Failed to set user in session: ${error}`);
     c.set("user", null);
     c.set("session", null);
   }
