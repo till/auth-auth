@@ -2,10 +2,11 @@ import { betterAuth } from "better-auth";
 import { admin, magicLink } from "better-auth/plugins";
 import { passkey } from "better-auth/plugins/passkey";
 import Database from "better-sqlite3";
+import appConfig from "./app.js";
 
 export const auth = betterAuth({
   database: new Database("./auth.db"),
-  baseURL: "http://localhost:3000",
+  baseURL: `http://${appConfig.host}:${appConfig.port}`,
   logger: {
     disabled: false,
     level: "debug",
