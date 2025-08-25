@@ -7,7 +7,8 @@
     "db:migrate": "npx @better-auth/cli migrate --yes",
     "prettier:check": "prettier --check '**/*.{js,css,md,yml}'",
     "prettier:write": "prettier --write '**/*.{js,css,md,yml}'",
-    "prepare": "husky"
+    "prepare": "husky",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@hono/node-server": "^1.19.0",
