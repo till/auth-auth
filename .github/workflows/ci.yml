@@ -3,11 +3,12 @@ name: ci
 on:
   pull_request:
 
+env:
+  HUSKY: 0
+
 jobs:
-  smoke:
+  commitlint:
     runs-on: ubuntu-latest
-    env:
-      HUSKY: 0
     steps:
       - uses: actions/checkout@v5
         with:
@@ -33,6 +34,17 @@ jobs:
         if: github.event_name == 'pull_request'
         run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
 
+  smoke:
+    needs:
+      - commitlint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
       - run: npm ci
       - run: |
           npm run prettier:check
