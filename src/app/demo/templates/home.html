@@ -30,9 +30,11 @@
         if (user.role == 'guest') {
           status.classList.remove('logged-in')
           status.classList.add('logged-out')
+          status.innerHTML += `<a href="/login?redirect_url=http://localhost:3000/demo">Login here!</a>`
         } else {
           status.classList.remove('logged-out')
           status.classList.add('logged-in')
+          status.innerHTML += `<a href="/logout?redirect_url=http://localhost:3000/demo">Logout!</a>`
         }
       })
     })
