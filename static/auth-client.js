@@ -2,6 +2,9 @@
 import { createAuthClient } from "https://esm.sh/better-auth@latest/client";
 import { passkeyClient } from "https://esm.sh/better-auth@latest/client/plugins";
 
+/**
+ * @type {import('better-auth/client').ClientOptions} authClient
+ */
 export const authClient = createAuthClient({
   baseURL: "http://localhost:3000",
   plugins: [passkeyClient()],
