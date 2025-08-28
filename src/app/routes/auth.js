@@ -4,20 +4,17 @@ import { Layout, Navigation } from "../components/layout.js";
 import { Message, FormSection } from "../components/common.js";
 import { Login, MagicLinkButton, PasskeyButton } from "../components/login.js";
 import { auth } from "../../../auth.js";
-
-// Helper function to forward Set-Cookie headers from better-auth response
-const forwardCookies = (response, c) => {
-  const setCookieHeaders = response.headers.getSetCookie?.() || [];
-  setCookieHeaders.forEach((cookie) => {
-    c.header("Set-Cookie", cookie);
-  });
-};
+import { getLink } from "../utils/links.js";
+import { validateRedirectUrl } from "../utils/redirect.js";
+import { forwardCookies } from "../utils/cookies.js";
+import { logout } from "../handlers/logout.js";
 
 export default new Hono()
   .get("/login", (c) => {
     // Login page
     const error = c.req.query("error");
     const success = c.req.query("success");
+    const redirectUrl = validateRedirectUrl(c.req.query("redirect_url"), "");
 
     return c.html(
       Layout({
@@ -26,13 +23,16 @@ export default new Hono()
           <h1>Sign In</h1>
           ${Navigation({
             back: { href: "/", text: "Back to Home" },
-            extra: { href: "/signup", text: "Don't have an account? Sign Up" },
+            extra: {
+              href: getLink("/signup", redirectUrl),
+              text: "Don't have an account? Sign Up",
+            },
           })}
           ${Message({ error, success })}
           ${FormSection({
             children: html`
-              ${Login()} ${MagicLinkButton()}
-              ${PasskeyButton({ action: "signin" })}
+              ${Login({ redirectUrl })} ${MagicLinkButton({ redirectUrl })}
+              ${PasskeyButton({ action: "signin", redirectUrl })}
             `,
           })}
         `,
@@ -42,6 +42,7 @@ export default new Hono()
   .get("/signup", (c) => {
     const error = c.req.query("error");
     const success = c.req.query("success");
+    const redirectUrl = validateRedirectUrl(c.req.query("redirect_url"), "");
 
     return c.html(
       Layout({
@@ -50,12 +51,20 @@ export default new Hono()
           <h1>Sign Up</h1>
           ${Navigation({
             back: { href: "/", text: "Back to Home" },
-            extra: { href: "/login", text: "Already have an account? Sign In" },
+            extra: {
+              href: getLink("/login", redirectUrl),
+              text: "Already have an account? Sign In",
+            },
           })}
           ${Message({ error, success })}
           ${FormSection({
             children: html`
               <form method="post" action="/signup">
+                <input
+                  type="hidden"
+                  name="redirect_url"
+                  value="${redirectUrl}"
+                />
                 <div class="form-group">
                   <input
                     type="text"
@@ -83,7 +92,7 @@ export default new Hono()
                 <button type="submit">Create Account</button>
               </form>
 
-              ${MagicLinkButton()}
+              ${MagicLinkButton({ redirectUrl })}
             `,
           })}
         `,
@@ -93,92 +102,73 @@ export default new Hono()
   .post("/signup", async (c) => {
     // Sign up form handler
     const body = await c.req.parseBody();
-    const { name, email, password } = body;
+    const { name, email, password, redirect_url } = body;
 
-    try {
-      const result = await auth.api.signUpEmail({
-        body: {
-          name,
-          email,
-          password,
-        },
-      });
+    const callbackURL = validateRedirectUrl(
+      redirect_url,
+      `/profile?success=${encodeURIComponent("Thanks for registering!")}`,
+    );
 
-      if (result.error) {
-        return c.redirect(
-          "/login?error=" +
-            encodeURIComponent(result.error.message || "Sign up failed"),
-        );
-      }
+    const status = await auth.api.signUpEmail({
+      body: {
+        name: name,
+        email: email,
+        password: password,
+        callbackURL: callbackURL,
+        rememberMe: true,
+      },
+      headers: c.req.raw.headers,
+      returnHeaders: true,
+    });
 
-      return c.redirect(
-        "/login?success=" +
-          encodeURIComponent("Account created! You can now sign in."),
-      );
-    } catch (error) {
-      console.error(`Error in /signup: ${error}`);
-      return c.redirect("/login?error=" + encodeURIComponent("Network error"));
+    // forward headers (cookies)
+    if (status.headers) {
+      forwardCookies(status.headers, c);
     }
+
+    return c.redirect(callbackURL);
   })
-  .post("/signin", async (c) => {
+  .post("/login", async (c) => {
     // Sign in form handler
     const body = await c.req.parseBody();
-    const { email, password } = body;
+    const { email, password, redirect_url } = body;
 
-    try {
-      const result = await auth.api.signInEmail({
-        body: {
-          email,
-          password,
-          rememberMe: true,
-        },
-        headers: c.req.raw.headers,
-        asResponse: true,
-      });
+    const callbackURL = validateRedirectUrl(redirect_url, "/profile");
+    const errorCallbackURL = validateRedirectUrl(redirect_url, "/login");
 
-      if (!result.ok) {
-        const error = await result.json();
-        return c.redirect(
-          "/login?error=" +
-            encodeURIComponent(error.message || "Sign in failed"),
-        );
-      }
-
-      // Forward the cookies from better-auth
-      forwardCookies(result, c);
-
-      return c.redirect("/profile?success=welcome+back");
-    } catch (error) {
-      console.error(`Error in /signin: ${error}`);
-      return c.redirect("/login?error=" + encodeURIComponent("Network error"));
-    }
-  })
-  .post("/logout", async (c) => {
-    // Logout handler
-    try {
-      const result = await auth.api.signOut({
-        headers: c.req.raw.headers,
-        asResponse: true,
-      });
-
-      if (result.ok) {
-        // Forward the cookies to clear the session
-        forwardCookies(result, c);
-      }
-    } catch (error) {
-      console.error("Logout error:", error);
+    const status = await auth.api.signInEmail({
+      body: {
+        email,
+        password,
+        rememberMe: true,
+        callbackURL,
+        errorCallbackURL,
+      },
+      headers: c.req.raw.headers,
+      returnHeaders: true,
+    });
+    // forward headers (cookies)
+    if (status.headers) {
+      forwardCookies(status.headers, c);
     }
 
-    return c.redirect("/");
+    return c.redirect(status.response.url);
   })
+  .get("/logout", logout)
+  .post("/logout", logout)
   .get("/login/magic-link", (c) => {
+    const redirectUrl = validateRedirectUrl(c.req.query("redirect_url"), "");
+
     return c.html(
       Layout({
         title: "Magic Link Login",
         children: html`
           <h1>Magic Link Login</h1>
           ${Navigation({
-            back: { href: "/login", text: "Back to Login" },
+            back: {
+              href: getLink("/login", redirectUrl),
+              text: "Back to Login",
+            },
           })}
           ${Message({
             error: c.req.query("error"),
@@ -187,6 +177,11 @@ export default new Hono()
           ${FormSection({
             children: html`
               <form method="post" action="/login/magic-link">
+                <input
+                  type="hidden"
+                  name="redirect_url"
+                  value="${redirectUrl}"
+                />
                 <div class="form-group">
                   <input
                     type="email"
@@ -205,84 +200,39 @@ export default new Hono()
   })
   .post("/login/magic-link", async (c) => {
     const body = await c.req.parseBody();
-    const { email } = body;
+    const { email, redirect_url } = body;
 
-    try {
-      console.log("Calling signInMagicLink with:", { email });
-      const result = await auth.api.signInMagicLink({
-        body: { email },
-        headers: c.req.raw.headers,
-        asResponse: true,
-      });
+    const intermediateURL = `/login/magic-link?success=${encodeURIComponent("Magic link sent! Check your email.")}`;
 
-      if (!result.ok) {
-        const error = await result.json();
-        console.log("signInMagicLink error:", error);
-        return c.redirect(
-          "/login/magic-link?error=" +
-            encodeURIComponent(error.message || "Failed to send magic link"),
-        );
-      }
+    const callbackURL = validateRedirectUrl(redirect_url, "/profile");
+    const errorCallbackURL = validateRedirectUrl(
+      redirect_url,
+      "/login/magic-link",
+    );
 
-      console.log("Magic link sent successfully");
-      return c.redirect(
-        "/login/magic-link?success=" +
-          encodeURIComponent("Magic link sent! Check your email."),
-      );
-    } catch (error) {
-      console.error("signInMagicLink catch error:", error);
-      return c.redirect(
-        "/login/magic-link?error=" + encodeURIComponent("Network error"),
-      );
-    }
-  })
-  .get("/magic-link", async (c) => {
-    const token = c.req.query("token");
-
-    if (!token) {
-      return c.redirect(
-        "/login?error=" + encodeURIComponent("Invalid magic link"),
-      );
-    }
-
-    try {
-      const result = await auth.api.magicLinkVerify({
-        body: { token },
-        headers: c.req.raw.headers,
-        asResponse: true,
-      });
-
-      if (!result.ok) {
-        const error = await result.json();
-        return c.redirect(
-          "/login?error=" +
-            encodeURIComponent(
-              error.message || "Invalid or expired magic link",
-            ),
-        );
-      }
-
-      // Forward cookies from magic link verification
-      forwardCookies(result, c);
-
-      return c.redirect(
-        "/profile?success=" + encodeURIComponent("Successfully signed in!"),
-      );
-    } catch (error) {
-      console.error(`Error in /magic-link: ${error}`);
-      return c.redirect(
-        "/login?error=" + encodeURIComponent("Magic link verification failed"),
-      );
-    }
+    await auth.api.signInMagicLink({
+      body: {
+        email,
+        callbackURL,
+        errorCallbackURL,
+      },
+      headers: c.req.raw.headers,
+    });
+    return c.redirect(intermediateURL);
   })
   .get("/login/passkey", (c) => {
+    const redirectUrl = validateRedirectUrl(c.req.query("redirect_url"), "");
+
     return c.html(
       Layout({
         title: "Passkey Sign In",
         children: html`
           <h1>Sign In with Passkey</h1>
           ${Navigation({
-            back: { href: "/login", text: "Back to Login" },
+            back: {
+              href: getLink("/login", redirectUrl),
+              text: "Back to Login",
+            },
           })}
           ${Message({
             error: c.req.query("error"),
@@ -290,7 +240,10 @@ export default new Hono()
           })}
           ${FormSection({
             children: html`
-              <form onsubmit="handlePasskeySignIn(event)">
+              <form
+                onsubmit="handlePasskeySignIn(event)"
+                data-redirect-url="${redirectUrl}"
+              >
                 <div class="form-group">
                   <input
                     type="email"

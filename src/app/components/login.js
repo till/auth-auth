@@ -1,8 +1,9 @@
 import { html } from "hono/html";
 
 // Login form component
-export const Login = () => html`
-  <form method="post" action="/signin">
+export const Login = ({ redirectUrl } = {}) => html`
+  <form method="post" action="/login">
+    <input type="hidden" name="redirect_url" value="${redirectUrl}" />
     <div class="form-group">
       <input type="email" name="email" placeholder="Email" required />
     </div>
@@ -14,12 +15,13 @@ export const Login = () => html`
 `;
 
 // Magic link button component
-export const MagicLinkButton = () => html`
+export const MagicLinkButton = ({ redirectUrl } = {}) => html`
   <div style="text-align: center; margin: 20px 0;">
     <span style="color: #666;">or</span>
   </div>
 
   <form method="get" action="/login/magic-link">
+    <input type="hidden" name="redirect_url" value="${redirectUrl}" />
     <button type="submit" style="background: #28a745; width: 100%;">
       Send Magic Link
     </button>
@@ -27,11 +29,12 @@ export const MagicLinkButton = () => html`
 `;
 
 // Passkey button component
-export const PasskeyButton = ({ action = "signin" }) => html`
+export const PasskeyButton = ({ action = "signin", redirectUrl } = {}) => html`
   <form
     method="get"
     action="${action === "signup" ? "/signup/passkey" : "/login/passkey"}"
   >
+    <input type="hidden" name="redirect_url" value="${redirectUrl}" />
     <button
       type="submit"
       style="background: #6f42c1; width: 100%; color: white;"
