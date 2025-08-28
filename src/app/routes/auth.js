@@ -36,7 +36,11 @@ export default new Hono()
           ${Message({ error, success })}
           ${FormSection({
             children: html`
-              ${Login({ redirectUrl })} ${MagicLinkButton({ redirectUrl })}
+              ${Login({ redirectUrl })}
+              <div style="text-align: center; margin: 20px 0;">
+                <span style="color: #666;">or</span>
+              </div>
+              ${MagicLinkButton({ redirectUrl })}
               ${PasskeyButton({ action: "signin", redirectUrl })}
               ${GitHubButton({ redirectUrl })}
             `,
