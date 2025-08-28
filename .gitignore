@@ -27,5 +27,6 @@ lerna-debug.log*
 # misc
 .DS_Store
 
-auth.db
-better-auth_migrations/
+/better-auth_migrations/
+/auth.db
+/.envrc
