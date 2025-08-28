@@ -6,10 +6,17 @@ export const Layout = ({ title, children }) => html`
   <html>
     <head>
       <title>${title}</title>
-      <link rel="stylesheet" href="/static/app.css" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <meta name="color-scheme" content="light dark" />
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+      />
     </head>
     <body>
-      <div class="container">${children}</div>
+      <header></header>
+      <main class="container">${children}</main>
+      <footer></footer>
       <script type="module" src="/static/auth-client.js"></script>
     </body>
   </html>

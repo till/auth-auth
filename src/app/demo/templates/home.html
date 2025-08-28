@@ -7,39 +7,40 @@
 <ul>
   <li>doesn't know anything about better auth</li>
   <li>makes requests to <b>/whoami</b> to determine status of the user</li>
-  <li>requests can be client-side (uses the browser cookies, like this demo)</li>
-  <li>requests can be server-side (e.g. from Rails, but need to pass on cookies)</li>
+  <li>
+    requests can be client-side (uses the browser cookies, like this demo)
+  </li>
+  <li>
+    requests can be server-side (e.g. from Rails, but need to pass on cookies)
+  </li>
 </ul>
 
-
-<div class="status" id="status">
-</div>
+<div class="status" id="status"></div>
 
 <script>
   try {
-    fetch('/whoami', {
-      method: 'GET',
+    fetch("/whoami", {
+      method: "GET",
       headers: {
-        'Accept': 'application/json',
+        Accept: "application/json",
       },
-      credentials: 'include'
+      credentials: "include",
     }).then((resp) => {
       resp.json().then((user) => {
-        const status = document.getElementById('status')
-        status.innerHTML = `<pre>${JSON.stringify(user, null, 2)}</pre>`
-        if (user.role == 'guest') {
-          status.classList.remove('logged-in')
-          status.classList.add('logged-out')
-          status.innerHTML += `<a href="/login?redirect_url=http://localhost:3000/demo">Login here!</a>`
+        const status = document.getElementById("status");
+        status.innerHTML = `<pre>${JSON.stringify(user, null, 2)}</pre>`;
+        if (user.role == "guest") {
+          status.classList.remove("logged-in");
+          status.classList.add("logged-out");
+          status.innerHTML += `<a href="/login?redirect_url=http://localhost:3000/demo">Login here!</a>`;
         } else {
-          status.classList.remove('logged-out')
-          status.classList.add('logged-in')
-          status.innerHTML += `<a href="/logout?redirect_url=http://localhost:3000/demo">Logout!</a>`
+          status.classList.remove("logged-out");
+          status.classList.add("logged-in");
+          status.innerHTML += `<a href="/logout?redirect_url=http://localhost:3000/demo">Logout!</a>`;
         }
-      })
-    })
-
-  } catch(e) {
-    console.log(`error: ${e}`)
+      });
+    });
+  } catch (e) {
+    console.log(`error: ${e}`);
   }
 </script>
