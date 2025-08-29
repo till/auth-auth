@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { admin, magicLink } from "better-auth/plugins";
 import { passkey } from "better-auth/plugins/passkey";
 import Database from "better-sqlite3";
-import appConfig from "./app.js";
+import appConfig from "./config.js";
 
 export const auth = betterAuth({
   database: new Database("./auth.db"),
