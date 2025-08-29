@@ -16,8 +16,8 @@ export const auth = betterAuth({
   },
   socialProviders: {
     github: {
-      clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      clientId: appConfig.social.github.id,
+      clientSecret: appConfig.social.github.secret,
     },
   },
   telemetry: {
