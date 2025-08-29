@@ -1,7 +1,5 @@
 import { html } from "hono/html";
-
-// Swedish locale uses ISO8601 dates
-const locale = "se-se";
+import { formatISO } from "date-fns";
 
 // Admin users list component
 export const UsersList = ({ users, total }) => html`
@@ -46,7 +44,9 @@ export const UsersList = ({ users, total }) => html`
                       </form>
                     </td>
                     <td>
-                      ${new Date(user.createdAt).toLocaleDateString(locale)}
+                      ${formatISO(new Date(user.createdAt), {
+                        representation: "date",
+                      })}
                     </td>
                   </tr>
                 `,

@@ -1,7 +1,5 @@
 import { html } from "hono/html";
-
-// Swedish locale uses ISO8601 dates
-const locale = "se-se";
+import { format } from "date-fns";
 
 // User info display
 export const UserInfo = ({ user }) => html`
@@ -11,7 +9,10 @@ export const UserInfo = ({ user }) => html`
   <p><strong>ID:</strong> ${user.id}</p>
   <p><strong>Email Verified:</strong> ${user.emailVerified ? "Yes" : "No"}</p>
   <p>
-    <strong>Created:</strong> ${new Date(user.createdAt).toLocaleString(locale)}
+    <strong>Created:</strong> ${format(
+      new Date(user.createdAt),
+      "yyyy-MM-dd HH:mm:ss",
+    )}
   </p>
 `;
 
