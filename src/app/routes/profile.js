@@ -37,12 +37,10 @@ export default new Hono()
           ${Message({ error, success })} ${UserInfo({ user })}
           ${PasskeyList({ passkeys })} ${AddPasskeySection({ user })}
 
-          <div style="margin-top: 30px;">
-            <form method="post" action="/logout" style="display: inline;">
-              <button type="submit">Logout</button>
-            </form>
-            <a href="/" style="margin-left: 20px;">Back to Home</a>
-          </div>
+          <form method="post" action="/logout">
+            <button type="submit">Logout</button>
+          </form>
+          <a href="/">Back to Home</a>
         `,
       }),
     );

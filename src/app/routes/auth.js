@@ -57,6 +57,7 @@ export default new Hono()
             },
           })}
           ${Message({ error, success })}
+          <h2>Using email and password</h2>
           ${FormSection({
             children: html`
               <form method="post" action="/signup">
@@ -65,31 +66,29 @@ export default new Hono()
                   name="redirect_url"
                   value="${redirectUrl}"
                 />
-                <div class="form-group">
+                <fieldset>
                   <input
                     type="text"
                     name="name"
                     placeholder="Full Name"
                     required
                   />
-                </div>
-                <div class="form-group">
+                </fieldset>
+                <fieldset role="group">
                   <input
                     type="email"
                     name="email"
                     placeholder="Email"
                     required
                   />
-                </div>
-                <div class="form-group">
                   <input
                     type="password"
                     name="password"
                     placeholder="Password"
                     required
                   />
-                </div>
-                <button type="submit">Create Account</button>
+                  <input type="submit" value="Create Account" />
+                </fieldset>
               </form>
 
               ${MagicLinkButton({ redirectUrl })}
@@ -182,14 +181,14 @@ export default new Hono()
                   name="redirect_url"
                   value="${redirectUrl}"
                 />
-                <div class="form-group">
+                <fieldset>
                   <input
                     type="email"
                     name="email"
                     placeholder="Enter your email"
                     required
                   />
-                </div>
+                </fieldset>
                 <button type="submit">Send Magic Link</button>
               </form>
             `,
@@ -244,20 +243,15 @@ export default new Hono()
                 onsubmit="handlePasskeySignIn(event)"
                 data-redirect-url="${redirectUrl}"
               >
-                <div class="form-group">
+                <fieldset>
                   <input
                     type="email"
                     id="passkey-email"
                     placeholder="Enter your email"
                     required
                   />
-                </div>
-                <button
-                  type="submit"
-                  style="background: #6f42c1; color: white;"
-                >
-                  Sign In with Passkey
-                </button>
+                </fieldset>
+                <button type="submit">Sign In with Passkey</button>
               </form>
             `,
           })}
