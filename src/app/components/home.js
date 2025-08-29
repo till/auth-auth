@@ -4,7 +4,7 @@ import { html } from "hono/html";
 export const LoginStatus = ({ user }) => html`
   ${user
     ? html`
-        <div>
+        <div class="pico-background-green-50">
           ✅ Logged in as: <strong>${user.name}</strong> (${user.email})
         </div>
         <a href="/profile">View Profile</a> |
@@ -13,7 +13,7 @@ export const LoginStatus = ({ user }) => html`
         </form>
       `
     : html`
-        <div>❌ Not logged in</div>
+        <div class="pico-background-red-50">❌ Not logged in</div>
         <a href="/login">Sign In</a> | <a href="/signup">Sign Up</a>
       `}
 `;

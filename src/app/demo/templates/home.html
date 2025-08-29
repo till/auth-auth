@@ -30,12 +30,12 @@
         const status = document.getElementById("status");
         status.innerHTML = `<pre>${JSON.stringify(user, null, 2)}</pre>`;
         if (user.role == "guest") {
-          status.classList.remove("logged-in");
-          status.classList.add("logged-out");
+          status.classList.remove("pico-background-green-50");
+          status.classList.add("pico-background-red-50");
           status.innerHTML += `<a href="/login?redirect_url=http://localhost:3000/demo">Login here!</a>`;
         } else {
-          status.classList.remove("logged-out");
-          status.classList.add("logged-in");
+          status.classList.remove("pico-background-red-50");
+          status.classList.add("pico-background-green-50");
           status.innerHTML += `<a href="/logout?redirect_url=http://localhost:3000/demo">Logout!</a>`;
         }
       });
