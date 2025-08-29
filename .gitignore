@@ -28,3 +28,4 @@ lerna-debug.log*
 .DS_Store
 
 auth.db
+better-auth_migrations/
