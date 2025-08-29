@@ -1,0 +1,12 @@
+logging:
+  level: info
+  type: json
+  stderr: false
+
+addr: ":9090"
+
+dbs:
+  - path: ${DATABASE_URL}
+    replicas:
+      - url: ${AUTH_S3_URL}
+        force-path-style: true
