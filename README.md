@@ -4,6 +4,12 @@ Small authentication/profile prototype for Codebar.
 
 ## Local Setup
 
+For login or registration via GitHub to work, you have create an [oauth2 application](https://github.com/settings/developers). Fetch client id and secret and setup the `.envrc` from included example (in `.envrc-dist`).
+
+Then export `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` into the environment. We recommend using [direnv](https://direnv.net/).
+
+---
+
 For a new run the following:
 
 ```sh
@@ -20,6 +26,8 @@ npm ci
 npm run db:migrate
 npm run dev
 ```
+
+---
 
 View the application:
 

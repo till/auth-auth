@@ -57,8 +57,28 @@ const handleAddPasskey = async (event) => {
   }
 };
 
+const handleGitHubSignIn = async (event) => {
+  event.preventDefault();
+  const button = event.target;
+  const redirectUrl = button.dataset.redirectUrl || "/profile";
+
+  try {
+    await authClient.signIn.social({
+      provider: "github",
+      callbackURL: redirectUrl,
+    });
+  } catch (error) {
+    console.error("GitHub sign in failed:", error);
+    window.location.href =
+      "/login?error=" +
+      encodeURIComponent("GitHub sign in failed: " + error.message);
+  }
+};
+
 // Attach event listeners when DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
+  window.handleGitHubSignIn = handleGitHubSignIn;
+
   const signInForm = document.querySelector(
     'form[onsubmit*="handlePasskeySignIn"]',
   );
