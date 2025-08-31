@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { admin, magicLink } from "better-auth/plugins";
 import { passkey } from "better-auth/plugins/passkey";
 import Database from "better-sqlite3";
-import appConfig from "./app.js";
+import appConfig from "./config.js";
 
 export const auth = betterAuth({
   database: new Database("./auth.db"),
@@ -16,8 +16,8 @@ export const auth = betterAuth({
   },
   socialProviders: {
     github: {
-      clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      clientId: appConfig.social.github.id,
+      clientSecret: appConfig.social.github.secret,
     },
   },
   telemetry: {
