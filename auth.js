@@ -2,10 +2,24 @@ import { betterAuth } from "better-auth";
 import { admin, magicLink } from "better-auth/plugins";
 import { passkey } from "better-auth/plugins/passkey";
 import Database from "better-sqlite3";
-import appConfig from "./app.js";
+import appConfig from "./config.js";
+
+const db = new Database(appConfig.database_url);
+
+try {
+  // https://litestream.io/tips/#busy-timeout
+  db.pragma("busy_timeout = 5000");
+
+  // https://litestream.io/tips/#synchronous-pragma
+  db.pragma("synchronous = NORMAL");
+} catch (e) {
+  // this will trigger a hard error and end the process
+  console.error(`error occurred: ${e.message}`);
+  process.exit(-1);
+}
 
 export const auth = betterAuth({
-  database: new Database("./auth.db"),
+  database: db,
   baseURL: `http://${appConfig.host}:${appConfig.port}`,
   logger: {
     disabled: false,
@@ -16,8 +30,8 @@ export const auth = betterAuth({
   },
   socialProviders: {
     github: {
-      clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      clientId: appConfig.social.github.id,
+      clientSecret: appConfig.social.github.secret,
     },
   },
   telemetry: {
