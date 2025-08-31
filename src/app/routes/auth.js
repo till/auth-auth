@@ -2,7 +2,12 @@ import { Hono } from "hono";
 import { html } from "hono/html";
 import { Layout, Navigation } from "../components/layout.js";
 import { Message, FormSection } from "../components/common.js";
-import { Login, MagicLinkButton, PasskeyButton } from "../components/login.js";
+import {
+  GitHubButton,
+  Login,
+  MagicLinkButton,
+  PasskeyButton,
+} from "../components/login.js";
 import { auth } from "../../../auth.js";
 import { getLink } from "../utils/links.js";
 import { validateRedirectUrl } from "../utils/redirect.js";
@@ -33,6 +38,7 @@ export default new Hono()
             children: html`
               ${Login({ redirectUrl })} ${MagicLinkButton({ redirectUrl })}
               ${PasskeyButton({ action: "signin", redirectUrl })}
+              ${GitHubButton({ redirectUrl })}
             `,
           })}
         `,
@@ -90,8 +96,8 @@ export default new Hono()
                   <input type="submit" value="Create Account" />
                 </fieldset>
               </form>
-
               ${MagicLinkButton({ redirectUrl })}
+              ${GitHubButton({ action: "signup", redirectUrl })}
             `,
           })}
         `,
