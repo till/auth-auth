@@ -2,7 +2,7 @@
   "name": "auth-auth",
   "type": "module",
   "scripts": {
-    "dev": "nodemon src/index.js",
+    "dev": "node --watch src/index.js",
     "db:generate": "npx @better-auth/cli generate --yes",
     "db:migrate": "npx @better-auth/cli migrate --yes",
     "prettier:check": "prettier --check '**/*.{js,css,md,yml}'",
@@ -19,7 +19,6 @@
     "hono": "^4.9.4"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@eslint/js": "^9.34.0",
