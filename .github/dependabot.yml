@@ -6,3 +6,10 @@ updates:
       interval: "weekly"
     allow:
       - dependency-type: "direct"
+    groups:
+      npm-deps:
+        update-types:
+          - "minor"
+          - "patch"
+        patterns:
+          - "*"
