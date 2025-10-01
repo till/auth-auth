@@ -1,6 +1,6 @@
 import { Hono } from "hono";
+import { pinoLogger } from "hono-pino";
 import { serveStatic } from "@hono/node-server/serve-static";
-import { logger } from "hono/logger";
 
 import { auth } from "../../auth.js";
 
@@ -16,7 +16,23 @@ import demoHandler from "./demo/routes.js";
 const app = new Hono();
 
 // register middlewares
-app.use(logger());
+app.use(
+  pinoLogger({
+    pino: {
+      level: "debug",
+      formatters: {
+        level: (label) => {
+          return { level: label };
+        },
+      },
+      redact: [
+        "req.headers.cookie",
+        "req.headers.authorization",
+        'req.headers["user-agent"]',
+      ],
+    },
+  }),
+);
 
 // Better-auth API routes
 app.on(["POST", "GET"], "/api/auth/*", (c) => {
