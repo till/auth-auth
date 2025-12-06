@@ -12,6 +12,7 @@
     "start": "node src/index.js"
   },
   "dependencies": {
+    "@better-auth/passkey": "^1.4.5",
     "@hono/node-server": "^1.19.6",
     "better-auth": "^1.4.1",
     "better-sqlite3": "^12.4.6",
