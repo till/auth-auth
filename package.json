@@ -12,24 +12,24 @@
     "start": "node src/index.js"
   },
   "dependencies": {
-    "@better-auth/passkey": "^1.4.5",
-    "@hono/node-server": "^1.19.6",
+    "@better-auth/passkey": "^1.4.15",
+    "@hono/node-server": "^1.19.9",
     "better-auth": "^1.4.1",
-    "better-sqlite3": "^12.5.0",
+    "better-sqlite3": "^12.6.2",
     "date-fns": "^4.1.0",
-    "hono": "^4.10.7",
+    "hono": "^4.11.4",
     "hono-pino": "^0.10.3",
-    "pino": "^10.1.0"
+    "pino": "^10.2.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.2.0",
-    "@commitlint/config-conventional": "^20.2.0",
-    "@eslint/js": "^9.39.1",
-    "eslint": "^9.39.1",
+    "@commitlint/cli": "^20.3.1",
+    "@commitlint/config-conventional": "^20.3.1",
+    "@eslint/js": "^9.39.2",
+    "eslint": "^9.39.2",
     "globals": "^16.5.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
-    "prettier": "^3.7.4"
+    "prettier": "^3.8.0"
   },
   "lint-staged": {
     "**/*.{js,css,md,yml}": "prettier --write"
