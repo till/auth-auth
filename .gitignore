@@ -30,3 +30,7 @@ lerna-debug.log*
 /better-auth_migrations/
 /auth.db
 /.envrc
+
+# test coverage and tap
+coverage/
+.tap/
