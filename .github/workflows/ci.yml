@@ -66,11 +66,23 @@ jobs:
           npm run db:generate
           npm run db:migrate
 
+  test:
+    needs:
+      - commitlint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+      - run: npm ci
+      - run: npm test -- --no-coverage
+
   build:
     permissions:
       contents: read
       packages: write
-    needs: [smoke, shell]
+    needs: [smoke, shell, test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
