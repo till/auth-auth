@@ -1,0 +1,26 @@
+import { test } from "tap";
+import { getTestInstance } from "../helpers/test-instance.js";
+import { createTestApp } from "../helpers/app.js";
+
+test("home page feature tests", async (t) => {
+  t.test("home page loads without authentication", async (t) => {
+    const testInstance = await getTestInstance();
+    const app = createTestApp(testInstance.auth);
+
+    const res = await app.request("/");
+
+    t.equal(res.status, 200, "returns 200 OK");
+    const html = await res.text();
+    t.match(html, /Authentication Demo/i, "contains app title");
+  });
+
+  t.test("home page has login link", async (t) => {
+    const testInstance = await getTestInstance();
+    const app = createTestApp(testInstance.auth);
+
+    const res = await app.request("/");
+    const html = await res.text();
+
+    t.match(html, /login/i, "contains login link");
+  });
+});
