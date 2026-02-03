@@ -76,7 +76,7 @@ jobs:
         with:
           node-version-file: ".nvmrc"
       - run: npm ci
-      - run: npm test -- --no-coverage
+      - run: npm test
 
   build:
     permissions:

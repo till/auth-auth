@@ -25,6 +25,7 @@ test/
 
 **Better Auth test instance (`test/helpers/test-instance.js`):**
 Adapts Better Auth's built-in test instance helper for use with tap. Better Auth provides `getTestInstance()` which returns:
+
 - `client` - Test client for API calls
 - `runWithUser(email, password, callback)` - Executes code with user session context
 - `signInWithTestUser()` - Creates default test user and returns `runWithDefaultUser()`
@@ -72,6 +73,7 @@ Each feature test verifies complete user flows:
 **Authentication (`test/features/authentication.test.js`):**
 
 Happy paths:
+
 - GitHub OAuth redirect and callback
 - Username/password login
 - Magic link generation and authentication
@@ -81,6 +83,7 @@ Happy paths:
 Note: Passkey testing is excluded from initial scope due to WebAuthn complexity. Can be added later.
 
 Error cases:
+
 - Invalid credentials (wrong password, nonexistent user)
 - Expired sessions
 - Malformed login requests (missing fields, invalid email format)
@@ -90,11 +93,13 @@ Error cases:
 **Profile (`test/features/profile.test.js`):**
 
 Happy paths:
+
 - View profile when authenticated
 - Update profile information
 - Profile data accuracy
 
 Error cases:
+
 - Redirect to login when unauthenticated
 - Invalid profile update data (empty fields, XSS attempts)
 - Update profile with expired session
@@ -103,11 +108,13 @@ Error cases:
 **Admin (`test/features/admin.test.js`):**
 
 Happy paths:
+
 - Admin access to admin panel
 - User listing
 - Role updates
 
 Error cases:
+
 - Regular user denied access to admin panel
 - Unauthenticated user denied access
 - Invalid role updates (nonexistent role, invalid user ID)
@@ -116,6 +123,7 @@ Error cases:
 
 **Admin Role Setup:**
 Better Auth's admin plugin provides API methods for managing admin users. During spike, verify the admin API:
+
 - `client.admin.setRole({ userId, role })` - Set user role (if available)
 - Alternative: Configure admin user IDs in auth instance setup
 - Fallback: Direct database manipulation (least preferred)
@@ -125,11 +133,13 @@ The test pattern shows the expected API. Implementation will be confirmed during
 **Magic links (`test/features/magic-links.test.js`):**
 
 Happy paths:
+
 - Request magic link
 - Parse magic link URL from logs
 - Authenticate via magic link
 
 Error cases:
+
 - Expired link handling
 - Invalid magic link token
 - Reusing a magic link (single-use enforcement)
@@ -142,73 +152,74 @@ import { test } from "tap";
 import { getTestInstance } from "../helpers/test-instance.js";
 import { createTestApp } from "../helpers/app.js";
 
-test('profile feature tests', async (t) => {
+test("profile feature tests", async (t) => {
   t.beforeEach(async () => {
-    const testInstance = await getTestInstance()
-    const app = createTestApp(testInstance.auth)
-    return { testInstance, app }
-  })
+    const testInstance = await getTestInstance();
+    const app = createTestApp(testInstance.auth);
+    return { testInstance, app };
+  });
 
-  t.test('user can view their profile', async (t) => {
-    const { testInstance, app } = t.context
-    const { client, runWithUser } = testInstance
+  t.test("user can view their profile", async (t) => {
+    const { testInstance, app } = t.context;
+    const { client, runWithUser } = testInstance;
 
     // Create user using Better Auth API
     await client.signUp({
-      email: 'test@example.com',
-      password: 'pass123',
-      name: 'Test User',
-    })
+      email: "test@example.com",
+      password: "pass123",
+      name: "Test User",
+    });
 
     // Better Auth manages session context automatically
-    await runWithUser('test@example.com', 'pass123', async (headers) => {
-      const res = await app.request('/profile', { headers })
+    await runWithUser("test@example.com", "pass123", async (headers) => {
+      const res = await app.request("/profile", { headers });
 
-      t.equal(res.status, 200)
-      const html = await res.text()
-      t.match(html, /test@example\.com/, 'displays user email')
-      t.match(html, /Test User/, 'displays user name')
-    })
-  })
+      t.equal(res.status, 200);
+      const html = await res.text();
+      t.match(html, /test@example\.com/, "displays user email");
+      t.match(html, /Test User/, "displays user name");
+    });
+  });
 
-  t.test('unauthenticated user redirects to login', async (t) => {
-    const { app } = t.context
-    const res = await app.request('/profile')
+  t.test("unauthenticated user redirects to login", async (t) => {
+    const { app } = t.context;
+    const res = await app.request("/profile");
 
-    t.equal(res.status, 302, 'redirects unauthenticated request')
-    t.match(res.headers.get('location'), /\/login/, 'redirects to login page')
-  })
+    t.equal(res.status, 302, "redirects unauthenticated request");
+    t.match(res.headers.get("location"), /\/login/, "redirects to login page");
+  });
 
-  t.test('admin user has admin access', async (t) => {
-    const { testInstance, app } = t.context
-    const { client, runWithUser } = testInstance
+  t.test("admin user has admin access", async (t) => {
+    const { testInstance, app } = t.context;
+    const { client, runWithUser } = testInstance;
 
     // Create admin user
     const user = await client.signUp({
-      email: 'admin@example.com',
-      password: 'adminpass',
-      name: 'Admin User',
-    })
+      email: "admin@example.com",
+      password: "adminpass",
+      name: "Admin User",
+    });
 
     // Set admin role using Better Auth admin API
     // Note: Implementation depends on Better Auth admin plugin API
     await client.admin.setRole({
       userId: user.id,
-      role: 'admin',
-    })
+      role: "admin",
+    });
 
-    await runWithUser('admin@example.com', 'adminpass', async (headers) => {
-      const res = await app.request('/admin', { headers })
+    await runWithUser("admin@example.com", "adminpass", async (headers) => {
+      const res = await app.request("/admin", { headers });
 
-      t.equal(res.status, 200, 'admin can access admin panel')
-    })
-  })
-})
+      t.equal(res.status, 200, "admin can access admin panel");
+    });
+  });
+});
 ```
 
 ## Database Strategy
 
 Tests use in-memory SQLite databases (`:memory:`):
+
 - Each individual test gets a fresh database (not shared per file)
 - Use `t.beforeEach()` to create test instance for each test
 - Better Auth's test instance helper manages schema creation automatically
@@ -218,6 +229,7 @@ Tests use in-memory SQLite databases (`:memory:`):
 - Tests can run in parallel without interference
 
 **Better Auth Test Instance Benefits:**
+
 - Automatic session management via async context
 - No manual cookie extraction or header construction
 - Proper session isolation between test users
@@ -251,6 +263,7 @@ Better Auth's OAuth flow involves redirects and callbacks that complicate testin
 ## Configuration
 
 **Package.json scripts:**
+
 ```json
 "scripts": {
   "test": "tap",
@@ -260,6 +273,7 @@ Better Auth's OAuth flow involves redirects and callbacks that complicate testin
 ```
 
 **Tap configuration (`.taprc`):**
+
 ```yaml
 files:
   - "test/**/*.test.js"
@@ -272,26 +286,28 @@ Note: 10-second timeout is appropriate for in-memory tests. If tests exceed this
 ## Implementation Approach
 
 **Installation:**
+
 ```bash
 npm install --save-dev tap
 ```
 
 **Setup:**
 Add to `.gitignore`:
+
 ```
 coverage/
 .tap/
 ```
 
-**Build order:**
-0. **Spike: Investigate Better Auth test utilities** (2 hours max, document findings)
-   - Clone Better Auth repository and locate test instance implementation
-   - Verify `getTestInstance()` functionality and async context behavior
-   - Test if `runWithUser()` works outside vitest
-   - Check admin plugin API for role management
-   - Build minimal proof-of-concept with tap
-   - Decision: Use directly, adapt, or implement alternative
-   - Document findings in spike report
+**Build order:** 0. **Spike: Investigate Better Auth test utilities** (2 hours max, document findings)
+
+- Clone Better Auth repository and locate test instance implementation
+- Verify `getTestInstance()` functionality and async context behavior
+- Test if `runWithUser()` works outside vitest
+- Check admin plugin API for role management
+- Build minimal proof-of-concept with tap
+- Decision: Use directly, adapt, or implement alternative
+- Document findings in spike report
 
 1. Set up test infrastructure (tap config, .taprc, .gitignore)
 2. Create test instance adapter based on spike findings
@@ -308,6 +324,7 @@ coverage/
 Start with authentication and profile viewing. These flows cover the core application value. Expand to admin features and the demo app after core tests pass reliably. Passkey testing is deferred due to WebAuthn complexity.
 
 **Key Integration Points:**
+
 - Better Auth's test instance helper is designed for vitest but can be adapted for tap
 - The `runWithUser()` function provides async context for session management
 - The `client` from test instance can be used for direct Better Auth API calls
@@ -341,6 +358,7 @@ Start with authentication and profile viewing. These flows cover the core applic
 **Goal:** Validate that Better Auth's test utilities can be used with tap.
 
 **Tasks:**
+
 1. Clone Better Auth repository: `git clone https://github.com/better-auth/better-auth.git`
 2. Locate test instance implementation (likely in `/packages/better-auth/src/test-utils/` or similar)
 3. Read source code to understand:
@@ -351,6 +369,7 @@ Start with authentication and profile viewing. These flows cover the core applic
    - Magic link testing utilities (if any)
 
 4. Build proof-of-concept:
+
    ```javascript
    // test-spike.js - minimal tap test with Better Auth utilities
    import { test } from "tap";
@@ -377,10 +396,12 @@ Start with authentication and profile viewing. These flows cover the core applic
    - Alternative approach if spike fails?
 
 **Reference:**
+
 - Better Auth docs: https://www.better-auth.com/docs/reference/contributing#using-the-test-instance-helper
 - Better Auth repo: https://github.com/better-auth/better-auth
 
 **Acceptance Criteria:**
+
 - Proof-of-concept runs successfully with tap, OR
 - Clear documentation of why it won't work and alternative approach
 

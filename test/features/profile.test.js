@@ -30,11 +30,7 @@ test("profile feature tests", async (t) => {
     const res = await app.request("/profile");
 
     t.equal(res.status, 302, "redirects unauthenticated user");
-    t.match(
-      res.headers.get("location"),
-      /\/login/,
-      "redirects to login page",
-    );
+    t.match(res.headers.get("location"), /\/login/, "redirects to login page");
   });
 
   t.test("profile with invalid session redirects to login", async (t) => {

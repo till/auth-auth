@@ -13,6 +13,7 @@
 ## Task 0: Spike - Investigate Better Auth Test Utilities
 
 **Files:**
+
 - Create: `spike/test-instance-poc.js` (temporary, will be deleted)
 - Create: `spike/FINDINGS.md` (document results)
 
@@ -39,6 +40,7 @@ Expected: Find test utility files (likely in packages/better-auth/src/ or tests/
 **Step 3: Read test instance implementation**
 
 Open the test instance file and document:
+
 - How `getTestInstance()` is implemented
 - Dependencies (vitest-specific or generic?)
 - How `runWithUser()` manages async context
@@ -51,25 +53,32 @@ Create `spike/FINDINGS.md`:
 # Better Auth Test Utilities Spike
 
 ## Location
+
 - File: [path to test-instance file]
 - Package: [better-auth or separate]
 
 ## getTestInstance() Implementation
+
 [Summary of how it works]
 
 ## runWithUser() Implementation
+
 [How async context is managed]
 
 ## Vitest Dependencies
+
 [List any vitest-specific features used]
 
 ## Admin API
+
 [Document admin plugin methods for setting roles]
 
 ## Magic Link Testing
+
 [Any utilities for testing magic links]
 
 ## Conclusion
+
 - [ ] Can be used directly with tap
 - [ ] Needs adaptation (list what)
 - [ ] Must implement custom version (why)
@@ -141,6 +150,7 @@ Expected: Either PASS or FAIL with clear error. Document in FINDINGS.md.
 **Step 7: Update FINDINGS.md with decision**
 
 Based on POC results, document:
+
 - Does Better Auth's test instance work with tap?
 - What adaptations are needed?
 - Admin API: How to set user roles?
@@ -163,6 +173,7 @@ admin API usage. [Include key decision here]"
 ## Task 1: Install and Configure Tap
 
 **Files:**
+
 - Modify: `package.json`
 - Create: `.taprc`
 - Modify: `.gitignore`
@@ -235,6 +246,7 @@ git commit -m "chore: install tap and configure test infrastructure"
 ## Task 2: Create Test Instance Helper
 
 **Files:**
+
 - Create: `test/helpers/test-instance.js`
 
 **Step 1: Create test instance helper**
@@ -341,7 +353,7 @@ export async function getTestInstance() {
         // This placeholder will fail tests with clear error until implemented
         throw new Error(
           "setRole implementation pending spike completion. " +
-          "Check spike/FINDINGS.md for Better Auth admin API details."
+            "Check spike/FINDINGS.md for Better Auth admin API details.",
         );
       },
     },
@@ -443,6 +455,7 @@ Provides client helpers for common auth operations."
 ## Task 3: Create App Test Helper
 
 **Files:**
+
 - Create: `test/helpers/app.js`
 
 **Step 1: Create app factory helper**
@@ -550,6 +563,7 @@ Uses same auth instance as test utilities for consistency."
 ## Task 4: First Feature Test - Unauthenticated Home Page
 
 **Files:**
+
 - Create: `test/features/home.test.js`
 
 **Step 1: Write simple home page test**
@@ -611,6 +625,7 @@ Verifies unauthenticated home page loads and has login links."
 ## Task 5: Authentication Feature Tests - Signup and Login
 
 **Files:**
+
 - Create: `test/features/authentication.test.js`
 
 **Step 1: Write signup and login tests**
@@ -680,11 +695,7 @@ test("authentication feature tests", async (t) => {
     });
 
     t.equal(res.status, 302, "redirects after login");
-    t.match(
-      res.headers.get("location"),
-      /\/profile/,
-      "redirects to profile",
-    );
+    t.match(res.headers.get("location"), /\/profile/, "redirects to profile");
     t.ok(res.headers.get("set-cookie"), "sets session cookie");
   });
 
@@ -712,16 +723,8 @@ test("authentication feature tests", async (t) => {
     });
 
     t.equal(res.status, 302, "redirects after failed login");
-    t.match(
-      res.headers.get("location"),
-      /\/login/,
-      "redirects back to login",
-    );
-    t.match(
-      res.headers.get("location"),
-      /error/,
-      "includes error parameter",
-    );
+    t.match(res.headers.get("location"), /\/login/, "redirects back to login");
+    t.match(res.headers.get("location"), /error/, "includes error parameter");
   });
 
   t.test("login fails with nonexistent user", async (t) => {
@@ -741,11 +744,7 @@ test("authentication feature tests", async (t) => {
     });
 
     t.equal(res.status, 302, "redirects after failed login");
-    t.match(
-      res.headers.get("location"),
-      /\/login/,
-      "redirects back to login",
-    );
+    t.match(res.headers.get("location"), /\/login/, "redirects back to login");
   });
 });
 ```
@@ -773,6 +772,7 @@ Covers happy path (signup, login) and error cases
 ## Task 6: Authentication Feature Tests - Logout
 
 **Files:**
+
 - Modify: `test/features/authentication.test.js`
 
 **Step 1: Add logout test to authentication.test.js**
@@ -780,41 +780,41 @@ Covers happy path (signup, login) and error cases
 Add to the test suite in `test/features/authentication.test.js`:
 
 ```javascript
-  t.test("user can logout", async (t) => {
-    const { testInstance, app } = t.context;
-    const { client, getAuthHeaders } = testInstance;
+t.test("user can logout", async (t) => {
+  const { testInstance, app } = t.context;
+  const { client, getAuthHeaders } = testInstance;
 
-    // Create and login user
-    await client.signUp({
-      email: "logout@example.com",
-      password: "password123",
-      name: "Logout User",
-    });
-
-    const headers = await getAuthHeaders("logout@example.com", "password123");
-
-    // Verify user is logged in by accessing profile
-    const profileBefore = await app.request("/profile", { headers });
-    t.equal(profileBefore.status, 200, "user is logged in");
-
-    // Logout
-    const res = await app.request("/logout", {
-      method: "POST",
-      headers,
-    });
-
-    t.equal(res.status, 302, "redirects after logout");
-    t.match(res.headers.get("location"), /\//, "redirects to home");
-
-    // Verify session is invalidated
-    const profileAfter = await app.request("/profile", { headers });
-    t.equal(profileAfter.status, 302, "profile requires authentication");
-    t.match(
-      profileAfter.headers.get("location"),
-      /\/login/,
-      "redirects to login",
-    );
+  // Create and login user
+  await client.signUp({
+    email: "logout@example.com",
+    password: "password123",
+    name: "Logout User",
   });
+
+  const headers = await getAuthHeaders("logout@example.com", "password123");
+
+  // Verify user is logged in by accessing profile
+  const profileBefore = await app.request("/profile", { headers });
+  t.equal(profileBefore.status, 200, "user is logged in");
+
+  // Logout
+  const res = await app.request("/logout", {
+    method: "POST",
+    headers,
+  });
+
+  t.equal(res.status, 302, "redirects after logout");
+  t.match(res.headers.get("location"), /\//, "redirects to home");
+
+  // Verify session is invalidated
+  const profileAfter = await app.request("/profile", { headers });
+  t.equal(profileAfter.status, 302, "profile requires authentication");
+  t.match(
+    profileAfter.headers.get("location"),
+    /\/login/,
+    "redirects to login",
+  );
+});
 ```
 
 **Step 2: Run tests**
@@ -839,6 +839,7 @@ Verifies logout invalidates session and redirects to home."
 ## Task 7: Profile Feature Tests
 
 **Files:**
+
 - Create: `test/features/profile.test.js`
 
 **Step 1: Write profile tests**
@@ -882,11 +883,7 @@ test("profile feature tests", async (t) => {
     const res = await app.request("/profile");
 
     t.equal(res.status, 302, "redirects unauthenticated user");
-    t.match(
-      res.headers.get("location"),
-      /\/login/,
-      "redirects to login page",
-    );
+    t.match(res.headers.get("location"), /\/login/, "redirects to login page");
   });
 
   t.test("profile with invalid session redirects to login", async (t) => {
@@ -928,6 +925,7 @@ redirect behavior for unauthenticated/invalid sessions."
 ## Task 8: Admin Feature Tests
 
 **Files:**
+
 - Create: `test/features/admin.test.js`
 
 **Step 1: Write admin tests**
@@ -1006,11 +1004,13 @@ Before running tests, update `test/helpers/test-instance.js` admin.setRole metho
 Based on spike findings, replace the placeholder error with working code. Example implementations:
 
 If Better Auth provides admin API:
+
 ```javascript
 await auth.admin.setRole({ userId, role });
 ```
 
 If direct DB access is needed:
+
 ```javascript
 const db = auth.options?.database;
 if (!db) throw new Error("Cannot access database for role update");
@@ -1026,6 +1026,7 @@ npm test test/features/admin.test.js
 Expected: PASS (all 3 tests)
 
 If tests fail, verify:
+
 - Admin setRole implementation matches spike findings
 - `src/app/routes/admin.js` checks for admin role
 - Better Auth admin plugin is configured correctly
@@ -1045,6 +1046,7 @@ regular users, and unauthenticated users."
 ## Task 9: Magic Link Feature Tests
 
 **Files:**
+
 - Create: `test/features/magic-links.test.js`
 
 **Step 1: Write magic link tests**
@@ -1183,6 +1185,7 @@ Verifies email enumeration protection."
 ## Task 10: Run All Tests and Verify
 
 **Files:**
+
 - None (verification only)
 
 **Step 1: Run full test suite**
@@ -1196,6 +1199,7 @@ Expected: All tests PASS
 **Step 2: Check test count**
 
 Verify we have tests for:
+
 - Home page (2 tests)
 - Authentication (5 tests)
 - Profile (3 tests)
@@ -1216,6 +1220,7 @@ Expected: Coverage report generated in `coverage/` directory
 **Step 4: Review coverage**
 
 Open `coverage/index.html` and verify:
+
 - Routes have reasonable coverage (>70%)
 - Test helpers have high coverage (>80%)
 - Overall coverage is acceptable for first iteration
@@ -1241,6 +1246,7 @@ If any tests fail, they have hidden dependencies on test execution order. Fix by
 ## Task 11: Clean Up Helper Tests
 
 **Files:**
+
 - Delete: `test/helpers/test-instance.test.js`
 - Delete: `test/helpers/app.test.js`
 
@@ -1275,14 +1281,16 @@ Feature tests now provide adequate helper coverage."
 ## Task 12: Update Documentation
 
 **Files:**
+
 - Modify: `CLAUDE.md`
 
 **Step 1: Add testing section to CLAUDE.md**
 
 Add after the "Development Commands" section:
 
-```markdown
+````markdown
 **Testing:**
+
 - `npm test` - Run all tests
 - `npm run test:watch` - Run tests in watch mode (re-runs on file changes)
 - `npm run test:coverage` - Generate HTML coverage report
@@ -1292,16 +1300,20 @@ in-memory SQLite databases for complete isolation. Test helpers in
 `test/helpers/` provide utilities for creating test instances and apps.
 
 **Running specific tests:**
+
 ```sh
 npm test test/features/authentication.test.js  # Run one file
 npm test -- --grep "login"                      # Run tests matching pattern
 ```
+````
 
 **Test structure:**
+
 - `test/features/` - Feature-based integration tests
 - `test/helpers/` - Test utilities and factories
 - Tests use Better Auth's test utilities adapted for tap
-```
+
+````
 
 **Step 2: Commit**
 
@@ -1310,13 +1322,14 @@ git add CLAUDE.md
 git commit -m "docs: add testing documentation to CLAUDE.md
 
 Documents test commands, structure, and running specific tests."
-```
+````
 
 ---
 
 ## Task 13: Delete Spike Directory
 
 **Files:**
+
 - Delete: `spike/` (entire directory)
 
 **Step 1: Remove spike directory**
@@ -1354,11 +1367,13 @@ The admin tests assume Better Auth's admin plugin provides role management. If t
 Magic links are captured in `auth._testMagicLinks` array for testing. Tests can retrieve and use these URLs to verify the magic link flow.
 
 **Common Issues:**
+
 - If tests fail with "session not found", verify cookies are being set and parsed correctly
 - If tests timeout, check `.taprc` timeout setting (should be 10 seconds)
 - If coverage is low, add more negative test cases and edge cases
 
 **Next Steps:**
+
 - Add more error case tests (malformed requests, XSS attempts, etc.)
 - Add tests for utilities (`src/app/utils/`)
 - Add tests for handlers (`src/app/handlers/`)
