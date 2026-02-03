@@ -1,0 +1,5 @@
+files:
+  - "test/**/*.test.js"
+timeout: 30
+coverage-report:
+  - "text"
