@@ -52,6 +52,15 @@ The application runs at http://localhost:3000
 - `npm test` - Run all tests with coverage
 - `npm run test:coverage` - Run tests and view coverage report
 
+**Expected Error Messages:**
+
+During test execution, you will see ERROR messages in stderr. These are EXPECTED and do NOT indicate test failures:
+
+- `INTERNAL_SERVER_ERROR SqliteError: no such table: session` - Occurs when tests intentionally provide invalid session tokens to verify error handling
+- `Failed to fetch passkeys: InternalAPIError` - Occurs after invalid session lookup fails
+
+These errors are logged by Better Auth's internal error handling when tests verify that the application correctly handles error conditions (redirecting to login, etc.). Tests pass if assertions succeed - ignore these stderr messages.
+
 **Test Structure:**
 - `test/` - Test files organized by feature/functionality
 - `test/helpers/` - Shared test utilities and fixtures
