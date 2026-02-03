@@ -4,6 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **When editing this file:** Use the `elements-of-style:writing-clearly-and-concisely` skill to ensure clear, concise prose.
 
+**Code formatting:** All code must follow the Prettier rules defined in this repository. Before committing any code changes:
+
+- Run `npm run prettier:check` to verify formatting
+- Run `npm run prettier:write` to auto-format files
+- Prettier runs automatically on commit via lint-staged (configured in package.json)
+
 ## Project Overview
 
 Authentication/profile prototype for Codebar using [Better Auth](https://www.better-auth.com/). A Node.js application built with Hono framework, SQLite database, and Better Auth for authentication flows.
