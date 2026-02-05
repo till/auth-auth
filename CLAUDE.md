@@ -8,7 +8,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - Run `npm run prettier:check` to verify formatting
 - Run `npm run prettier:write` to auto-format files
-- Prettier runs automatically on commit via lint-staged (configured in package.json)
 
 ## Project Overview
 
@@ -135,7 +134,7 @@ These errors are logged by Better Auth's internal error handling when tests veri
 4. Merge through pull requests only.
 
 **Conventional commits:**
-Commitlint enforces this format:
+Follow this format:
 
 ```
 <type>(<optional scope>): <description>
@@ -254,6 +253,3 @@ Magic link URLs are logged to the console since there's no email sending configu
 
 **Graceful Shutdown:**
 The server handles SIGINT and SIGTERM for clean shutdowns (src/index.js:16-28).
-
-**Git Hooks:**
-Husky is configured with commit linting (conventional commits) and lint-staged (prettier on commit).
