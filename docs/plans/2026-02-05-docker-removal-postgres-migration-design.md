@@ -41,7 +41,7 @@ import Database from "better-sqlite3";
 import { Pool } from "pg";
 
 // Detect database type from connection string
-const isPostgres = appConfig.database_url.startsWith('postgres://');
+const isPostgres = appConfig.database_url.startsWith("postgres://");
 
 let db;
 if (isPostgres) {
