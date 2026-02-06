@@ -34,20 +34,6 @@ jobs:
         if: github.event_name == 'pull_request'
         run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
 
-  shell:
-    needs:
-      - commitlint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: asdf-vm/actions/install@v4
-        with:
-          tool_versions: |
-            shellcheck 0.11.0
-            shfmt 3.12.0
-      - run: shellcheck --shell bash .docker/rootfs/usr/bin/entrypoint.sh
-      - run: shfmt -d .docker/rootfs/usr/bin/entrypoint.sh
-
   smoke:
     needs:
       - commitlint
@@ -70,34 +56,33 @@ jobs:
     needs:
       - commitlint
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: authuser
+          POSTGRES_PASSWORD: authpass
+          POSTGRES_DB: authdb
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
       - run: npm ci
+      - run: npm run db:generate
+      - run: npm run db:migrate
       - run: npm test -- --disable-coverage
 
-  build:
-    permissions:
-      contents: read
-      packages: write
-    needs: [smoke, shell, test]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: docker/setup-buildx-action@v3
-      - id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ github.repository }}
-          tags: |
-            type=sha
-      - uses: docker/build-push-action@v6
-        with:
-          file: Dockerfile
-          context: .
-          annotations: ${{ steps.meta.outputs.annotations }}
-          labels: ${{ steps.meta.outputs.labels }}
-          tags: ${{ steps.meta.outputs.tags }}
-          push: false
+    env:
+      DATABASE_URL: postgres://authuser:authpass@localhost:5432/authdb
+      GITHUB_CLIENT_ID: dummy-id-for-testing
+      GITHUB_CLIENT_SECRET: dummy-secret-for-testing

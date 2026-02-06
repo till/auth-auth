@@ -39,12 +39,15 @@ Authentication/profile prototype for Codebar using [Better Auth](https://www.bet
 
 - `npm run dev` - Development mode with hot reload (watches for changes)
 - `npm start` - Production mode
-- `make run-dev` - Run with Docker Compose (includes S3-compatible backup via rustfs)
 
 **Database:**
 
 - `npm run db:generate` - Generate Better Auth database schema
 - `npm run db:migrate` - Run database migrations
+- `rm auth.db` - Delete local database to start fresh
+
+**Local development uses SQLite** (`./auth.db` file). No database server needed.
+**CI and production use PostgreSQL** (configured via `DATABASE_URL` environment variable).
 
 **Code quality:**
 
@@ -192,7 +195,7 @@ static/
 
 **Better Auth Integration:**
 
-- `auth.js` exports a configured Better Auth instance with SQLite backend
+- `auth.js` exports a configured Better Auth instance with dual database support (SQLite for local/tests, PostgreSQL for CI/production)
 - API routes mounted at `/api/auth/*` in `app.js` (line 38-40)
 - Session middleware runs on all routes, populating `c.user` and `c.session` (app.js:43-60)
 - Plugins: magic links (log to console), passkeys, admin
@@ -214,16 +217,17 @@ The app supports multiple authentication methods:
 
 **Database:**
 
-- SQLite database at `./auth.db` (configurable via `DATABASE_URL`)
-- Pragma settings for Litestream compatibility (auth.js:10-14)
-- Better Auth handles schema management
+- Local development: SQLite file at `./auth.db`
+- CI and production: PostgreSQL (via `DATABASE_URL` environment variable)
+- Database type detection based on connection string (starts with `postgres://`)
+- Better Auth handles schema management via Kysely adapter
 
 ### Important Configuration
 
 **Environment Variables:**
 
 - `PORT` - Server port (default: 3000)
-- `DATABASE_URL` - SQLite database path (default: ./auth.db)
+- `DATABASE_URL` - Database connection (default: ./auth.db for SQLite, or postgres:// URL for PostgreSQL)
 - `GITHUB_CLIENT_ID` - GitHub OAuth client ID (required)
 - `GITHUB_CLIENT_SECRET` - GitHub OAuth secret (required)
 

@@ -1,6 +1,6 @@
 # auth-auth
 
-Small authentication/profile prototype for Codebar.
+Small authentication/profile system for Codebar.
 
 ## Local Setup
 

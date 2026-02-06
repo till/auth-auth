@@ -1,6 +1,7 @@
 import { serve } from "@hono/node-server";
 import app from "./app/app.js";
 import appConfig from "../config.js";
+import { db } from "../auth.js";
 
 const server = serve(
   {
@@ -13,11 +14,27 @@ const server = serve(
 );
 
 // graceful shutdown
-process.on("SIGINT", () => {
+process.on("SIGINT", async () => {
+  // Close database connection pool if using Postgres
+  if (db.end) {
+    try {
+      await db.end();
+    } catch (err) {
+      console.error("Error closing database connection:", err);
+    }
+  }
   server.close();
   process.exit(0);
 });
-process.on("SIGTERM", () => {
+process.on("SIGTERM", async () => {
+  // Close database connection pool if using Postgres
+  if (db.end) {
+    try {
+      await db.end();
+    } catch (err) {
+      console.error("Error closing database connection:", err);
+    }
+  }
   server.close((err) => {
     if (err) {
       console.error(err);
