@@ -41,8 +41,7 @@ import Database from "better-sqlite3";
 import { Pool } from "pg";
 
 // Detect database type from connection string
-// Handles postgres://, postgresql://, and case variations
-const isPostgres = /^postgres(ql)?:\/\//i.test(appConfig.database_url);
+const isPostgres = appConfig.database_url.startsWith('postgres://');
 
 let db;
 if (isPostgres) {
@@ -162,14 +161,14 @@ jobs:
           - 5432:5432
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version-file: ".nvmrc"
       - run: npm ci
       - run: npm run db:generate
       - run: npm run db:migrate
-      - run: npm test
+      - run: npm test -- --disable-coverage
 
     env:
       DATABASE_URL: postgres://authuser:authpass@localhost:5432/authdb
