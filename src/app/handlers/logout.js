@@ -1,6 +1,6 @@
 import { validateRedirectUrl } from "../utils/redirect.js";
 import { forwardCookies } from "../utils/cookies.js";
-import { auth } from "../../../auth.js";
+import { getAuthFromContext } from "../utils/auth.js";
 
 /**
  * Logout handler
@@ -8,6 +8,7 @@ import { auth } from "../../../auth.js";
  * @returns
  */
 export const logout = async (c) => {
+  const auth = getAuthFromContext(c);
   const callbackURL = validateRedirectUrl(
     c.req.query("redirect_url"),
     "/?message=Bye!",

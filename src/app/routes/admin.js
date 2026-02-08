@@ -3,10 +3,11 @@ import { html } from "hono/html";
 import { Layout } from "../components/layout.js";
 import { Message } from "../components/common.js";
 import { UsersList } from "../components/admin.js";
-import { auth } from "../../../auth.js";
+import { getAuthFromContext } from "../utils/auth.js";
 
 export default new Hono()
   .get("/admin", async (c) => {
+    const auth = getAuthFromContext(c);
     const users = await auth.api.listUsers({
       query: {
         query: {
@@ -43,6 +44,7 @@ export default new Hono()
     );
   })
   .post("/admin/user/role", async (c) => {
+    const auth = getAuthFromContext(c);
     const body = await c.req.parseBody();
     const { userId, role } = body;
 

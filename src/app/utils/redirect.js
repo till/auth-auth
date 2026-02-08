@@ -1,4 +1,4 @@
-import config from "../../../config.js";
+import config from "../../config.js";
 
 /**
  * Checks if a redirect URL is valid (in the allowlist)
