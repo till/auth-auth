@@ -6,6 +6,7 @@ import { GitHubButton, Login, MagicLinkButton } from "../components/login.js";
 import { getLink } from "../utils/links.js";
 import { validateRedirectUrl } from "../utils/redirect.js";
 import { forwardCookies } from "../utils/cookies.js";
+import { getAuthFromContext } from "../utils/auth.js";
 import { logout } from "../handlers/logout.js";
 
 export default new Hono()
@@ -99,11 +100,7 @@ export default new Hono()
   })
   .post("/signup", async (c) => {
     // Sign up form handler
-    const auth = c.get("auth");
-    if (!auth) {
-      throw new Error("Auth not available - middleware order issue");
-    }
-
+    const auth = getAuthFromContext(c);
     const body = await c.req.parseBody();
     const { name, email, password, redirect_url } = body;
 
@@ -133,11 +130,7 @@ export default new Hono()
   })
   .post("/login", async (c) => {
     // Sign in form handler
-    const auth = c.get("auth");
-    if (!auth) {
-      throw new Error("Auth not available - middleware order issue");
-    }
-
+    const auth = getAuthFromContext(c);
     const body = await c.req.parseBody();
     const { email, password, redirect_url } = body;
 
@@ -207,11 +200,7 @@ export default new Hono()
     );
   })
   .post("/login/magic-link", async (c) => {
-    const auth = c.get("auth");
-    if (!auth) {
-      throw new Error("Auth not available - middleware order issue");
-    }
-
+    const auth = getAuthFromContext(c);
     const body = await c.req.parseBody();
     const { email, redirect_url } = body;
 
