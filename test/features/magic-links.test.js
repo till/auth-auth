@@ -1,11 +1,11 @@
 import { test } from "tap";
 import { getTestInstance } from "../helpers/test-instance.js";
-import { createTestApp } from "../helpers/app.js";
+import { createApp } from "../../src/app/app.js";
 
 test("magic links feature tests", async (t) => {
   t.test("user can request magic link", async (t) => {
     const testInstance = await getTestInstance();
-    const app = createTestApp(testInstance.auth);
+    const app = createApp(testInstance.auth);
     const { client } = testInstance;
 
     await client.signUp({
@@ -35,7 +35,7 @@ test("magic links feature tests", async (t) => {
 
   t.test("magic link request for nonexistent user succeeds", async (t) => {
     const testInstance = await getTestInstance();
-    const app = createTestApp(testInstance.auth);
+    const app = createApp(testInstance.auth);
 
     const formData = new URLSearchParams();
     formData.append("email", "nonexistent@example.com");
@@ -59,7 +59,7 @@ test("magic links feature tests", async (t) => {
 
   t.test("magic link GET page renders form", async (t) => {
     const testInstance = await getTestInstance();
-    const app = createTestApp(testInstance.auth);
+    const app = createApp(testInstance.auth);
 
     const res = await app.request("/login/magic-link");
 
@@ -71,7 +71,7 @@ test("magic links feature tests", async (t) => {
 
   t.test("magic link URL is captured in test", async (t) => {
     const testInstance = await getTestInstance();
-    const app = createTestApp(testInstance.auth);
+    const app = createApp(testInstance.auth);
     const { client, getMagicLinks } = testInstance;
 
     await client.signUp({

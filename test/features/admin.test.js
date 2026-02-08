@@ -1,11 +1,11 @@
 import { test } from "tap";
 import { getTestInstance } from "../helpers/test-instance.js";
-import { createTestApp } from "../helpers/app.js";
+import { createApp } from "../../src/app/app.js";
 
 test("admin feature tests", async (t) => {
   t.test("admin page can be requested", async (t) => {
     const testInstance = await getTestInstance();
-    const app = createTestApp(testInstance.auth);
+    const app = createApp(testInstance.auth);
 
     // For now, just test that the route exists and we can request it
     const res = await app.request("/admin");
@@ -19,7 +19,7 @@ test("admin feature tests", async (t) => {
 
   t.test("unauthenticated user cannot access admin panel", async (t) => {
     const testInstance = await getTestInstance();
-    const app = createTestApp(testInstance.auth);
+    const app = createApp(testInstance.auth);
 
     const res = await app.request("/admin");
 

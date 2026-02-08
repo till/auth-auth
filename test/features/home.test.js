@@ -1,11 +1,11 @@
 import { test } from "tap";
 import { getTestInstance } from "../helpers/test-instance.js";
-import { createTestApp } from "../helpers/app.js";
+import { createApp } from "../../src/app/app.js";
 
 test("home page feature tests", async (t) => {
   t.test("home page loads without authentication", async (t) => {
     const testInstance = await getTestInstance();
-    const app = createTestApp(testInstance.auth);
+    const app = createApp(testInstance.auth);
 
     const res = await app.request("/");
 
@@ -16,7 +16,7 @@ test("home page feature tests", async (t) => {
 
   t.test("home page has login link", async (t) => {
     const testInstance = await getTestInstance();
-    const app = createTestApp(testInstance.auth);
+    const app = createApp(testInstance.auth);
 
     const res = await app.request("/");
     const html = await res.text();

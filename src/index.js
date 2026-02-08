@@ -1,7 +1,9 @@
 import { serve } from "@hono/node-server";
-import app from "./app/app.js";
-import appConfig from "../config.js";
-import { db } from "../auth.js";
+import { createApp } from "./app/app.js";
+import appConfig from "./config.js";
+import { auth, db } from "./auth.js";
+
+const app = createApp(auth);
 
 const server = serve(
   {

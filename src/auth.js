@@ -1,6 +1,5 @@
 import { betterAuth } from "better-auth";
 import { admin, magicLink } from "better-auth/plugins";
-import { passkey } from "@better-auth/passkey";
 import Database from "better-sqlite3";
 import { Pool } from "pg";
 import appConfig from "./config.js";
@@ -70,7 +69,6 @@ export const auth = betterAuth({
         return Promise.resolve();
       },
     }),
-    passkey(),
     admin({
       // adminUserIds: [],
     }),
