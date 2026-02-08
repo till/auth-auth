@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { pinoLogger } from "hono-pino";
 import { serveStatic } from "@hono/node-server/serve-static";
 
-import { auth } from "../../auth.js";
+import { auth } from "../auth.js";
 
 import authHandler from "./routes/auth.js";
 import homeHandler from "./routes/home.js";

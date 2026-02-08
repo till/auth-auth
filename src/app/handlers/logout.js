@@ -1,6 +1,6 @@
 import { validateRedirectUrl } from "../utils/redirect.js";
 import { forwardCookies } from "../utils/cookies.js";
-import { auth } from "../../../auth.js";
+import { auth } from "../../auth.js";
 
 /**
  * Logout handler
