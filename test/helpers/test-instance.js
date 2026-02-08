@@ -1,6 +1,5 @@
 import { betterAuth } from "better-auth";
 import { admin, magicLink } from "better-auth/plugins";
-import { passkey } from "@better-auth/passkey";
 import { getMigrations } from "better-auth/db";
 import Database from "better-sqlite3";
 
@@ -16,11 +15,6 @@ import Database from "better-sqlite3";
  *    - Occurs when tests provide invalid session tokens/cookies
  *    - Better Auth attempts to query the session table before catching the error
  *    - Tests verify the app correctly handles this (redirects to login)
- *
- * 2. "Failed to fetch passkeys: InternalAPIError"
- *    - Occurs after invalid session lookup fails
- *    - Better Auth tries to fetch passkeys for the (non-existent) session
- *    - Again, tests verify correct error handling
  *
  * These errors are logged by Better Auth's internal error handling and cannot be
  * suppressed without hiding legitimate errors. They indicate the application is
@@ -69,7 +63,6 @@ export async function getTestInstance() {
           return Promise.resolve();
         },
       }),
-      passkey(), // Include passkey plugin to match production configuration
       admin(),
     ],
   });

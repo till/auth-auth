@@ -2,12 +2,7 @@ import { Hono } from "hono";
 import { html } from "hono/html";
 import { Layout, Navigation } from "../components/layout.js";
 import { Message, FormSection } from "../components/common.js";
-import {
-  GitHubButton,
-  Login,
-  MagicLinkButton,
-  PasskeyButton,
-} from "../components/login.js";
+import { GitHubButton, Login, MagicLinkButton } from "../components/login.js";
 import { auth } from "../../../auth.js";
 import { getLink } from "../utils/links.js";
 import { validateRedirectUrl } from "../utils/redirect.js";
@@ -37,7 +32,6 @@ export default new Hono()
           ${FormSection({
             children: html`
               ${Login({ redirectUrl })} ${MagicLinkButton({ redirectUrl })}
-              ${PasskeyButton({ action: "signin", redirectUrl })}
               ${GitHubButton({ redirectUrl })}
             `,
           })}
@@ -224,44 +218,4 @@ export default new Hono()
       headers: c.req.raw.headers,
     });
     return c.redirect(intermediateURL);
-  })
-  .get("/login/passkey", (c) => {
-    const redirectUrl = validateRedirectUrl(c.req.query("redirect_url"), "");
-
-    return c.html(
-      Layout({
-        title: "Passkey Sign In",
-        children: html`
-          <h1>Sign In with Passkey</h1>
-          ${Navigation({
-            back: {
-              href: getLink("/login", redirectUrl),
-              text: "Back to Login",
-            },
-          })}
-          ${Message({
-            error: c.req.query("error"),
-            success: c.req.query("success"),
-          })}
-          ${FormSection({
-            children: html`
-              <form
-                onsubmit="handlePasskeySignIn(event)"
-                data-redirect-url="${redirectUrl}"
-              >
-                <fieldset>
-                  <input
-                    type="email"
-                    id="passkey-email"
-                    placeholder="Enter your email"
-                    required
-                  />
-                </fieldset>
-                <button type="submit">Sign In with Passkey</button>
-              </form>
-            `,
-          })}
-        `,
-      }),
-    );
   });
