@@ -38,7 +38,7 @@ open http://localhost:3000
 ### Context
 
 - data is saved in a sqlite database
-- the app currently supports username/password, magic-link and (sign-in with) passkey
+- the app currently supports username/password, magic-link and GitHub OAuth
 - for magic-link, **inspect the log to fetch the URL**
 
 ## What's happening here?
@@ -46,8 +46,7 @@ open http://localhost:3000
 Once the application is running, you can try out the the following flows:
 
 - sign-up
-- sign-in (username/password, passkey)
-- add passkey
+- sign-in (username/password, GitHub OAuth, magic-link)
 
 In addition `/admin` hosts a very basic admin ui (list user, update roles).
 

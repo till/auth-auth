@@ -69,7 +69,6 @@ The application runs at http://localhost:3000
 During test execution, you will see ERROR messages in stderr. These are EXPECTED and do NOT indicate test failures:
 
 - `INTERNAL_SERVER_ERROR SqliteError: no such table: session` - Occurs when tests intentionally provide invalid session tokens to verify error handling
-- `Failed to fetch passkeys: InternalAPIError` - Occurs after invalid session lookup fails
 
 These errors are logged by Better Auth's internal error handling when tests verify that the application correctly handles error conditions (redirecting to login, etc.). Tests pass if assertions succeed - ignore these stderr messages.
 
@@ -159,7 +158,7 @@ Types:
 
 Examples:
 
-- `feat: add passkey authentication support`
+- `feat: add GitHub OAuth support`
 - `fix: resolve session expiration bug`
 - `chore(deps): bump hono from 4.10.7 to 4.11.7`
 - `docs: update setup instructions`
@@ -198,7 +197,7 @@ static/
 - `auth.js` exports a configured Better Auth instance with dual database support (SQLite for local/tests, PostgreSQL for CI/production)
 - API routes mounted at `/api/auth/*` in `app.js` (line 38-40)
 - Session middleware runs on all routes, populating `c.user` and `c.session` (app.js:43-60)
-- Plugins: magic links (log to console), passkeys, admin
+- Plugins: magic links (log to console), admin
 
 **Hono Framework:**
 
@@ -213,7 +212,6 @@ The app supports multiple authentication methods:
 - Username/password (Better Auth's emailAndPassword)
 - GitHub OAuth (configured in auth.js:32-35)
 - Magic links (URLs logged to console, see auth.js:47-50)
-- Passkeys (WebAuthn)
 
 **Database:**
 

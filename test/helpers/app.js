@@ -6,7 +6,6 @@ import {
   GitHubButton,
   Login,
   MagicLinkButton,
-  PasskeyButton,
 } from "../../src/app/components/login.js";
 import homeHandler from "../../src/app/routes/home.js";
 import profileHandler from "../../src/app/routes/profile.js";
@@ -99,7 +98,6 @@ export function createTestApp(auth) {
             ${FormSection({
               children: html`
                 ${Login({ redirectUrl })} ${MagicLinkButton({ redirectUrl })}
-                ${PasskeyButton({ action: "signin", redirectUrl })}
                 ${GitHubButton({ redirectUrl })}
               `,
             })}
