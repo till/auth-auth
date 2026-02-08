@@ -1,6 +1,5 @@
 import { validateRedirectUrl } from "../utils/redirect.js";
 import { forwardCookies } from "../utils/cookies.js";
-import { auth } from "../../auth.js";
 
 /**
  * Logout handler
@@ -8,6 +7,11 @@ import { auth } from "../../auth.js";
  * @returns
  */
 export const logout = async (c) => {
+  const auth = c.get("auth");
+  if (!auth) {
+    throw new Error("Auth not available - middleware order issue");
+  }
+
   const callbackURL = validateRedirectUrl(
     c.req.query("redirect_url"),
     "/?message=Bye!",

@@ -1,11 +1,11 @@
 import { test } from "tap";
 import { getTestInstance } from "../helpers/test-instance.js";
-import { createTestApp } from "../helpers/app.js";
+import { createApp } from "../../src/app/app.js";
 
 test("profile feature tests", async (t) => {
   t.test("authenticated user can view profile", async (t) => {
     const testInstance = await getTestInstance();
-    const app = createTestApp(testInstance.auth);
+    const app = createApp(testInstance.auth);
     const { client, getAuthHeaders } = testInstance;
 
     await client.signUp({
@@ -25,7 +25,7 @@ test("profile feature tests", async (t) => {
 
   t.test("unauthenticated user redirects to login", async (t) => {
     const testInstance = await getTestInstance();
-    const app = createTestApp(testInstance.auth);
+    const app = createApp(testInstance.auth);
 
     const res = await app.request("/profile");
 
@@ -35,7 +35,7 @@ test("profile feature tests", async (t) => {
 
   t.test("profile with invalid session redirects to login", async (t) => {
     const testInstance = await getTestInstance();
-    const app = createTestApp(testInstance.auth);
+    const app = createApp(testInstance.auth);
 
     // Use invalid cookie
     const res = await app.request("/profile", {
