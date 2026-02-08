@@ -1,11 +1,11 @@
 import { test } from "tap";
 import { getTestInstance } from "../helpers/test-instance.js";
-import { createTestApp } from "../helpers/app.js";
+import { createApp } from "../../src/app/app.js";
 
 test("authentication feature tests", async (t) => {
   t.test("user can sign up with email and password", async (t) => {
     const testInstance = await getTestInstance();
-    const app = createTestApp(testInstance.auth);
+    const app = createApp(testInstance.auth);
 
     const formData = new URLSearchParams();
     formData.append("name", "New User");
@@ -31,7 +31,7 @@ test("authentication feature tests", async (t) => {
 
   t.test("signup can be done multiple times for different users", async (t) => {
     const testInstance = await getTestInstance();
-    const app = createTestApp(testInstance.auth);
+    const app = createApp(testInstance.auth);
 
     const formData = new URLSearchParams();
     formData.append("name", "Another User");
@@ -56,7 +56,7 @@ test("authentication feature tests", async (t) => {
 
   t.test("signup form is accessible", async (t) => {
     const testInstance = await getTestInstance();
-    const app = createTestApp(testInstance.auth);
+    const app = createApp(testInstance.auth);
 
     const res = await app.request("/signup");
 
@@ -67,7 +67,7 @@ test("authentication feature tests", async (t) => {
 
   t.test("login form is accessible", async (t) => {
     const testInstance = await getTestInstance();
-    const app = createTestApp(testInstance.auth);
+    const app = createApp(testInstance.auth);
 
     const res = await app.request("/login");
 
@@ -78,7 +78,7 @@ test("authentication feature tests", async (t) => {
 
   t.test("user can logout", async (t) => {
     const testInstance = await getTestInstance();
-    const app = createTestApp(testInstance.auth);
+    const app = createApp(testInstance.auth);
     const { client, getAuthHeaders } = testInstance;
 
     // Create and login user
