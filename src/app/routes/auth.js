@@ -3,7 +3,7 @@ import { html } from "hono/html";
 import { Layout, Navigation } from "../components/layout.js";
 import { Message, FormSection } from "../components/common.js";
 import { GitHubButton, Login, MagicLinkButton } from "../components/login.js";
-import { auth } from "../../../auth.js";
+import { auth } from "../../auth.js";
 import { getLink } from "../utils/links.js";
 import { validateRedirectUrl } from "../utils/redirect.js";
 import { forwardCookies } from "../utils/cookies.js";

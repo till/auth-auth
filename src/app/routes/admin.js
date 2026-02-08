@@ -3,7 +3,7 @@ import { html } from "hono/html";
 import { Layout } from "../components/layout.js";
 import { Message } from "../components/common.js";
 import { UsersList } from "../components/admin.js";
-import { auth } from "../../../auth.js";
+import { auth } from "../../auth.js";
 
 export default new Hono()
   .get("/admin", async (c) => {
