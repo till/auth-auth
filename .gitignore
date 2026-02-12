@@ -34,3 +34,6 @@ lerna-debug.log*
 # test coverage and tap
 coverage/
 .tap/
+
+# worktrees
+.worktrees/
