@@ -29,19 +29,27 @@ test("admin feature tests", async (t) => {
     );
   });
 
-  t.test("admin role can be set on a user", async (t) => {
+  t.test("admin role can be set on a user via magic link auth", async (t) => {
     const testInstance = await getTestInstance();
-    const { client } = testInstance;
+    const { getAuthHeaders, client } = testInstance;
 
-    const result = await client.signUp({
-      email: "admin@example.com",
-      password: "adminpass123",
-      name: "Admin User",
-    });
+    // Get a user session via magic link
+    await getAuthHeaders("admin@example.com");
+
+    // Query the user from the database to get their ID
+    const db = testInstance.auth.options?.database;
+    if (!db) throw new Error("Cannot access database");
+    const user = db
+      .prepare("SELECT id FROM user WHERE email = ?")
+      .get("admin@example.com");
+
+    if (!user) {
+      throw new Error("User not found after magic link verification");
+    }
 
     // Set admin role
     await client.admin.setRole({
-      userId: result.user.id,
+      userId: user.id,
       role: "admin",
     });
 

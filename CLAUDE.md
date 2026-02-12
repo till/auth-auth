@@ -207,11 +207,10 @@ static/
 - Pino logger middleware with sensitive data redaction
 
 **Authentication Flows:**
-The app supports multiple authentication methods:
+The app supports two authentication methods:
 
-- Username/password (Better Auth's emailAndPassword)
-- GitHub OAuth (configured in auth.js:32-35)
-- Magic links (URLs logged to console, see auth.js:47-50)
+- GitHub OAuth (configured in auth.js:46-49)
+- Magic links (URLs logged to console, see auth.js:59-68)
 
 **Database:**
 

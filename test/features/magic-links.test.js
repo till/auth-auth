@@ -6,13 +6,6 @@ test("magic links feature tests", async (t) => {
   t.test("user can request magic link", async (t) => {
     const testInstance = await getTestInstance();
     const app = createApp(testInstance.auth);
-    const { client } = testInstance;
-
-    await client.signUp({
-      email: "magic@example.com",
-      password: "password123",
-      name: "Magic User",
-    });
 
     const formData = new URLSearchParams();
     formData.append("email", "magic@example.com");
@@ -72,13 +65,7 @@ test("magic links feature tests", async (t) => {
   t.test("magic link URL is captured in test", async (t) => {
     const testInstance = await getTestInstance();
     const app = createApp(testInstance.auth);
-    const { client, getMagicLinks } = testInstance;
-
-    await client.signUp({
-      email: "magic-url@example.com",
-      password: "password123",
-      name: "Magic URL User",
-    });
+    const { getMagicLinks } = testInstance;
 
     const formData = new URLSearchParams();
     formData.append("email", "magic-url@example.com");
@@ -94,11 +81,11 @@ test("magic links feature tests", async (t) => {
     const magicLinks = getMagicLinks();
     t.ok(magicLinks.length > 0, "magic link was generated");
     t.equal(
-      magicLinks[0].email,
+      magicLinks[magicLinks.length - 1].email,
       "magic-url@example.com",
       "magic link for correct email",
     );
-    t.ok(magicLinks[0].url, "magic link has URL");
-    t.ok(magicLinks[0].token, "magic link has token");
+    t.ok(magicLinks[magicLinks.length - 1].url, "magic link has URL");
+    t.ok(magicLinks[magicLinks.length - 1].token, "magic link has token");
   });
 });
