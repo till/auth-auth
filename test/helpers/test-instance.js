@@ -35,9 +35,6 @@ export async function getTestInstance() {
     logger: {
       disabled: true, // Suppress logs during tests
     },
-    emailAndPassword: {
-      enabled: true,
-    },
     socialProviders: {
       github: {
         clientId: "test-client-id",
@@ -73,23 +70,6 @@ export async function getTestInstance() {
 
   // Create client helper for common operations
   const client = {
-    signUp: async (body) => {
-      const result = await auth.api.signUpEmail({
-        body,
-        headers: new Headers(),
-      });
-      return result;
-    },
-
-    signIn: async (body) => {
-      const result = await auth.api.signInEmail({
-        body,
-        headers: new Headers(),
-        returnHeaders: true,
-      });
-      return result;
-    },
-
     // Admin methods (based on spike findings)
     admin: {
       setRole: async ({ userId, role }) => {
@@ -102,25 +82,80 @@ export async function getTestInstance() {
     },
   };
 
-  // Helper to get session headers for authenticated requests
-  const getAuthHeaders = async (email, password) => {
-    const result = await client.signIn({ email, password });
+  // Helper to get session headers for authenticated requests via magic link
+  const getAuthHeaders = async (email) => {
+    // Send magic link
+    await auth.api.signInMagicLink({
+      body: {
+        email,
+        callbackURL: "http://localhost:3000/profile",
+      },
+      headers: new Headers(),
+    });
+
+    // Get the magic link from the test array
+    const magicLinks = auth._testMagicLinks || [];
+    const magicLink = magicLinks.find((link) => link.email === email);
+
+    if (!magicLink) {
+      throw new Error(`No magic link found for ${email}`);
+    }
+
+    // Verify the magic link to get a session
+    // magicLinkVerify returns a 302 redirect with session cookie headers
+    let result;
+    try {
+      result = await auth.api.magicLinkVerify({
+        query: {
+          token: magicLink.token,
+          callbackURL: "http://localhost:3000/profile",
+        },
+        headers: new Headers(),
+        returnHeaders: true,
+      });
+    } catch (error) {
+      // magicLinkVerify may throw an APIError with the redirect response
+      // Extract the headers from the error if it's a 302 redirect
+      if (error.statusCode === 302) {
+        // error.headers is a Map-like object from Headers
+        let setCookie;
+        if (error.headers && typeof error.headers.get === "function") {
+          setCookie = error.headers.get("set-cookie");
+        } else if (error.headers && Array.isArray(error.headers)) {
+          // If it's an array of tuples
+          const setCookieHeader = error.headers.find(
+            (h) => h[0].toLowerCase() === "set-cookie",
+          );
+          setCookie = setCookieHeader ? setCookieHeader[1] : null;
+        }
+
+        if (setCookie) {
+          // Parse cookie to extract session token
+          const cookies = setCookie.split(",").map((c) => c.trim());
+          const sessionCookie = cookies.find((c) =>
+            c.startsWith("better-auth.session_token"),
+          );
+
+          if (sessionCookie) {
+            return { cookie: sessionCookie.split(";")[0] };
+          }
+        }
+      }
+      throw new Error(`Magic link verification failed: ${error.message}`, {
+        cause: error,
+      });
+    }
 
     if (!result.headers) {
-      throw new Error("No headers returned from sign in");
+      throw new Error("No headers returned from magic link verification");
     }
 
     const setCookie = result.headers.get("set-cookie");
     if (!setCookie) {
-      throw new Error("No session cookie in sign in response");
+      throw new Error("No session cookie in magic link verification response");
     }
 
     // Parse cookie to extract session token
-    // Note: Fragile cookie parsing. May break if:
-    // - Multiple Set-Cookie headers use newlines instead of commas
-    // - Better Auth changes cookie naming convention
-    // - Multiple session cookies are present
-    // If this breaks, consider using a proper cookie parser library
     const cookies = setCookie.split(",").map((c) => c.trim());
     const sessionCookie = cookies.find((c) =>
       c.startsWith("better-auth.session_token"),

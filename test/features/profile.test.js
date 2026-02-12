@@ -6,21 +6,14 @@ test("profile feature tests", async (t) => {
   t.test("authenticated user can view profile", async (t) => {
     const testInstance = await getTestInstance();
     const app = createApp(testInstance.auth);
-    const { client, getAuthHeaders } = testInstance;
+    const { getAuthHeaders } = testInstance;
 
-    await client.signUp({
-      email: "profile@example.com",
-      password: "password123",
-      name: "Profile User",
-    });
-
-    const headers = await getAuthHeaders("profile@example.com", "password123");
+    const headers = await getAuthHeaders("profile@example.com");
     const res = await app.request("/profile", { headers });
 
     t.equal(res.status, 200, "profile page loads");
     const html = await res.text();
     t.match(html, /profile@example\.com/, "displays user email");
-    t.match(html, /Profile User/, "displays user name");
   });
 
   t.test("unauthenticated user redirects to login", async (t) => {

@@ -42,9 +42,6 @@ export const auth = betterAuth({
     disabled: false,
     level: "debug",
   },
-  emailAndPassword: {
-    enabled: true,
-  },
   socialProviders: {
     github: {
       clientId: appConfig.social.github.id,
