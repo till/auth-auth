@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth";
 import { admin, magicLink } from "better-auth/plugins";
-import { getMigrations } from "better-auth/db";
+import { getMigrations } from "better-auth/db/migration";
 import Database from "better-sqlite3";
 
 /**
